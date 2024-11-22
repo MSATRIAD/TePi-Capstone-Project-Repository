@@ -1,1 +1,1 @@
-# TePi-Capstone-Project-Repositorie
+# TePi-Capstone-Project-Repository
