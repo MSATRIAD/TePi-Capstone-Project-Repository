@@ -1,4 +1,4 @@
-# TePi-Capstone-Project-Repository  
+# TegukPintar Capstone Project 
 TegukPintar (TePi) is an innovative Android application designed to empower users in making healthier and more informed beverage choices. The app leverages OCR (Optical Character Recognition) and Machine Learning technologies to analyze nutritional labels on packaged drinks. By scanning product labels, users receive a health rating based on sugar, fat, and other nutritional content.
 
 TePi aims to address the lack of accessible tools for evaluating the full nutritional profile of beverages. It uses Tesseract OCR to extract text from labels and a custom TensorFlow model to classify beverages into health grades (Nutri-Grade A, B, C, D) based on recognized standards like those in Singapore. The entire process is optimized for on-device performance using TensorFlow Lite, ensuring fast and accurate results without requiring constant internet connectivity.
