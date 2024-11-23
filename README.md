@@ -12,8 +12,8 @@ This project aligns with global health goals by promoting awareness of healthier
 | Muhammad Faiz Fahri | M011B4KY2812 | Machine Learning |
 | Anel Fuad Abiyyu | M011B4KY0538 | Machine Learning |
 | Muhammad Adzikra Dhiya Alfauzan | A011B4KY2689 | Mobile Development |
-| Row 2 Col 1 | A011B4KY1800 | Mobile Development |
-| Hosea Javier | C011B4KY2024 | Cloud Computing |
+| Hosea Javier | A011B4KY1800 | Mobile Development |
+| Ivan Arsy Himawan | C011B4KY2024 | Cloud Computing |
 | Muhammad Satria Dharma | c011b4ky3083 | Cloud Computing |
 
 
