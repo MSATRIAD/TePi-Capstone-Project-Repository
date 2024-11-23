@@ -23,6 +23,6 @@ This project aligns with global health goals by promoting awareness of healthier
 
 ## Cloud Computing
 ### Resources
-[Node.js](https://nodejs.org/en)  
+[Node.js](https://nodejs.org/en) is an open-source and cross-platform JavaScript runtime environment. Event-driven, Fast, and Asynchronus Nature.
 
-[Express.js](https://expressjs.com/)
+[Express.js](https://expressjs.com/)  is the most popular web framework for Node.js. It is designed for building web applications and APIs. Fast, unopinionated, minimalist web framework for Node.js
