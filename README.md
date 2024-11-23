@@ -5,6 +5,7 @@ TePi aims to address the lack of accessible tools for evaluating the full nutrit
 
 This project aligns with global health goals by promoting awareness of healthier beverage options, encouraging better lifestyle habits, and ultimately contributing to improved public health outcomes.
 
+## Our Team Member
 | Nama    | Bangkit ID    | Learning Path    |
 |:-------------:|:-------------:|:-------------:|
 | Jason Natanael Krisyanto | M011B4KY2042 | Machine Learning |
