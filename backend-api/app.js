@@ -29,7 +29,7 @@ app.get('/products', async (req, res) => {
         products.push({
           id: productId,  
           product_name: productData.product_name,
-          categories: productData.categories
+          grade: productData.nutriscore_grade
         });
       });
       
