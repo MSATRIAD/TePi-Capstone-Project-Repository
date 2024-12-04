@@ -1,17 +1,14 @@
 const express = require('express');
 const admin = require('firebase-admin');
 const cors = require('cors');
-const { Storage } = require('@google-cloud/storage');
-const tf = require('@tensorflow/tfjs-node');
+const axios = require('axios');
 require('dotenv').config();
-const path = require('path');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 const serviceAccount = require('./key.json');
-const serviceAccount2 = require('./key2.json'); 
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -19,42 +16,6 @@ admin.initializeApp({
 });
 
 const db = admin.database();
-
-const storage = new Storage({
-  credentials: serviceAccount2,
-});
-
-let model; 
-
-async function loadModel() {
-  const BUCKET_NAME = 'model_ml_test';
-  const MODEL_FILE = 'model.json';
-
-  try {
-    const file = storage.bucket(BUCKET_NAME).file(MODEL_FILE);
-    const TEMP_MODEL_PATH = path.join(__dirname, MODEL_FILE);
-
-    console.log('Downloading model from Cloud Storage...');
-    await file.download({ destination: TEMP_MODEL_PATH }); 
-    model = await tf.loadLayersModel(`file://${TEMP_MODEL_PATH}`);
-    console.log('Model loaded successfully');
-  } catch (error) {
-    console.error('Error loading model from Cloud Storage:', error);
-    throw new Error('Failed to load model');
-  }
-}
-
-async function predictNutriScore(energyKcal, sugars, saturatedFat, salt, fruitsVegNuts, fiber, proteins) {
-  if (!model) {
-    throw new Error('Model is not loaded');
-  }
-
-  const inputData = [[energyKcal, sugars, saturatedFat, salt, fruitsVegNuts, fiber, proteins]];
-  const inputTensor = tf.tensor2d(inputData);
-  const prediction = model.predict(inputTensor);
-  const predictedGrade = await prediction.data();
-  return predictedGrade[0];
-}
 
 app.get('/products', async (req, res) => {
   try {
@@ -103,45 +64,27 @@ app.get('/products/:id', async (req, res) => {
   }
 });
 
-app.post('/predict', async (req, res) => {
-  const { energyKcal, sugars, saturatedFat, salt, fruitsVegNuts, fiber, proteins } = req.body;
-
-  if (
-    energyKcal === undefined ||
-    sugars === undefined ||
-    saturatedFat === undefined ||
-    salt === undefined ||
-    fruitsVegNuts === undefined ||
-    fiber === undefined ||
-    proteins === undefined
-  ) {
-    return res.status(400).json({ error: 'All input fields are required' });
-  }
+app.post('/nutriscore', async (req, res) => {
+  const { energy_kcal, sugars, saturated_fat, salt, fruits_veg_nuts, fiber, proteins } = req.body;
 
   try {
-    const predictedGrade = await predictNutriScore(
-      energyKcal,
+    const response = await axios.post('http://0.0.0.0:8000/predict/', {
+      energy_kcal,
       sugars,
-      saturatedFat,
+      saturated_fat,
       salt,
-      fruitsVegNuts,
+      fruits_veg_nuts,
       fiber,
       proteins
-    );
+    });
 
-    res.status(200).json({ grade: predictedGrade });
+    res.json({ predicted_grade: response.data.predicted_grade });
   } catch (error) {
-    console.error('Prediction error:', error.message);
-    if (error.message === 'Model is not loaded') {
-      res.status(500).json({ error: 'Model not loaded. Please try again later.' });
-    } else {
-      res.status(500).json({ error: 'Failed to predict Nutri-Score' });
-    }
+    res.status(500).json({ error: 'Failed to get prediction from backend' });
   }
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, async () => {
   console.log(`Server is running on port ${PORT}`);
-  await loadModel(); 
 });
