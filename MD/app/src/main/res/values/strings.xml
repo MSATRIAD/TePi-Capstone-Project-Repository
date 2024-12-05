@@ -29,4 +29,14 @@
     <string name="error_passwords_not_matching">Passwords do not match</string>
     <string name="password_reset_success">Password reset successfully!</string>
     <string name="password_reset_failed">Password reset failed!</string>
+
+    <string name="energy_kcal">Energy: %f kcal</string>
+    <string name="fiber">Fiber: %f g</string>
+    <string name="fruits_vegetables">Fruits/Vegetables: %f g</string>
+    <string name="nutriscore_grade">Nutriscore: %s</string>
+    <string name="proteins">Proteins: %f g</string>
+    <string name="salt">Salt: %f mg</string>
+    <string name="saturated_fat">Saturated Fat: %f g</string>
+    <string name="sugars">Sugars: %f g</string>
+
 </resources>

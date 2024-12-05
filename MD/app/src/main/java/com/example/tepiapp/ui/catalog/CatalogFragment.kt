@@ -1,5 +1,6 @@
 package com.example.tepiapp.ui.catalog
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.tepiapp.Adapter
 import com.example.tepiapp.data.response.ListProductItem
 import com.example.tepiapp.databinding.FragmentCatalogBinding
+import com.example.tepiapp.ui.detail.DetailProductActivity
 
 class CatalogFragment : Fragment() {
 
@@ -61,7 +63,12 @@ class CatalogFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        productAdapter = Adapter(listOf())
+//        productAdapter = Adapter(listOf())
+        productAdapter = Adapter(listOf()) { product ->
+            val intent = Intent(requireContext(), DetailProductActivity::class.java)
+            intent.putExtra("productId", product.id)
+            startActivity(intent)
+        }
 
         binding.rvProduct.apply {
             layoutManager = GridLayoutManager(context, 2)
