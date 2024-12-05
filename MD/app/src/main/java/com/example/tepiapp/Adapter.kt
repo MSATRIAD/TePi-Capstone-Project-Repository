@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tepiapp.data.response.ListProductItem
 
-class Adapter(private var productList: List<ListProductItem>) : RecyclerView.Adapter<Adapter.ProductViewHolder>() {
+class Adapter(private var productList: List<ListProductItem>, private val onItemClick: (ListProductItem) -> Unit) : RecyclerView.Adapter<Adapter.ProductViewHolder>() {
 
     inner class ProductViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val productName: TextView = view.findViewById(R.id.tvProductName)
@@ -26,21 +26,9 @@ class Adapter(private var productList: List<ListProductItem>) : RecyclerView.Ada
         holder.productName.text = event.name
         holder.productGrade.text = event.grade
 
-//        holder.itemView.setOnClickListener {
-//            val intent = Intent(holder.itemView.context, DetailActivity::class.java)
-//            intent.putExtra("EXTRA_NAME", event.name)
-//            intent.putExtra("EXTRA_DESCRIPTION", event.description)
-//            intent.putExtra("EXTRA_OWNER", event.ownerName)
-//            intent.putExtra("EXTRA_QUOTA", event.quota)
-//            intent.putExtra("EXTRA_REGISTRANT", event.registrants)
-//            intent.putExtra("EXTRA_BEGIN_TIME", event.beginTime)
-//            intent.putExtra("EXTRA_END_TIME", event.endTime)
-//            intent.putExtra("EXTRA_CITY_NAME", event.cityName)
-//            intent.putExtra("EXTRA_IMAGE", event.mediaCover)
-//            intent.putExtra("EXTRA_LINK", event.link)
-//            intent.putExtra("EXTRA_ID", event.id.toString())
-//            holder.itemView.context.startActivity(intent)
-//        }
+        holder.itemView.setOnClickListener {
+            onItemClick(event) // Panggil callback dengan data produk yang diklik
+        }
     }
 
     override fun getItemCount(): Int {

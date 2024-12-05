@@ -79,11 +79,11 @@
                 android:hint="Nama Produk"
                 android:inputType="text" />
             <EditText
-                android:id="@+id/etServingSize"
+                android:id="@+id/etTotalEnergy"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="Takaran Saji (ml)"
+                android:hint="Energy Total (kkal)"
                 android:inputType="number" />
         </LinearLayout>
 
@@ -95,18 +95,18 @@
             android:weightSum="2"
             android:layout_marginBottom="8dp">
             <EditText
-                android:id="@+id/etTotalEnergy"
+                android:id="@+id/etFruitVegNut"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="Energi Total (kkal)"
+                android:hint="Fruit/Vegetable (g)"
                 android:inputType="number" />
             <EditText
-                android:id="@+id/etCarbohydrate"
+                android:id="@+id/etFiber"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="Karbohidrat (g)"
+                android:hint="Fiber (g)"
                 android:inputType="number" />
         </LinearLayout>
 
@@ -118,11 +118,11 @@
             android:weightSum="2"
             android:layout_marginBottom="8dp">
             <EditText
-                android:id="@+id/etTotalFat"
+                android:id="@+id/etFat"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="Lemak Total (g)"
+                android:hint="Lemak (g)"
                 android:inputType="number" />
             <EditText
                 android:id="@+id/etSugar"
@@ -147,7 +147,7 @@
                 android:hint="Protein (g)"
                 android:inputType="number" />
             <EditText
-                android:id="@+id/etSodium"
+                android:id="@+id/etSalt"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -158,7 +158,7 @@
 
     <!-- Tombol Process -->
     <Button
-        android:id="@+id/btnProcess"
+        android:id="@+id/btnSubmitData"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -166,5 +166,16 @@
         app:layout_constraintTop_toBottomOf="@id/inputContainer"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/tvPredictedGrade"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Predicted Grade: "
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnSubmitData" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
