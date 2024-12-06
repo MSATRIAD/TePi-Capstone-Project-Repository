@@ -1,17 +1,20 @@
 const express = require('express');
 const admin = require('firebase-admin');
 const cors = require('cors');
+const bodyParser = require('body-parser');
+const axios = require('axios');
 const { Storage } = require('@google-cloud/storage');
-const tf = require('@tensorflow/tfjs-node');
 require('dotenv').config();
-const path = require('path');
+const multer = require('multer');
+const { authUser } = require('./middleware');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(bodyParser.json());
 
 const serviceAccount = require('./key.json');
-const serviceAccount2 = require('./key2.json'); 
+const serviceAccount2 = require('./key2.json');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -20,41 +23,13 @@ admin.initializeApp({
 
 const db = admin.database();
 
+const firestoreDb = admin.firestore();
+
 const storage = new Storage({
-  credentials: serviceAccount2,
+  projectId: 'testing-442012',
+  keyFilename: './key2.json',
 });
 
-let model; 
-
-async function loadModel() {
-  const BUCKET_NAME = 'model_ml_test';
-  const MODEL_FILE = 'model.json';
-
-  try {
-    const file = storage.bucket(BUCKET_NAME).file(MODEL_FILE);
-    const TEMP_MODEL_PATH = path.join(__dirname, MODEL_FILE);
-
-    console.log('Downloading model from Cloud Storage...');
-    await file.download({ destination: TEMP_MODEL_PATH }); 
-    model = await tf.loadLayersModel(`file://${TEMP_MODEL_PATH}`);
-    console.log('Model loaded successfully');
-  } catch (error) {
-    console.error('Error loading model from Cloud Storage:', error);
-    throw new Error('Failed to load model');
-  }
-}
-
-async function predictNutriScore(energyKcal, sugars, saturatedFat, salt, fruitsVegNuts, fiber, proteins) {
-  if (!model) {
-    throw new Error('Model is not loaded');
-  }
-
-  const inputData = [[energyKcal, sugars, saturatedFat, salt, fruitsVegNuts, fiber, proteins]];
-  const inputTensor = tf.tensor2d(inputData);
-  const prediction = model.predict(inputTensor);
-  const predictedGrade = await prediction.data();
-  return predictedGrade[0];
-}
 
 app.get('/products', async (req, res) => {
   try {
@@ -69,7 +44,7 @@ app.get('/products', async (req, res) => {
       products.push({
         id: productId,
         product_name: productData.product_name,
-        grade: productData.nutriscore_grade,
+        nutriscore_grade: productData.nutriscore_grade,
       });
     });
 
@@ -103,45 +78,127 @@ app.get('/products/:id', async (req, res) => {
   }
 });
 
-app.post('/predict', async (req, res) => {
-  const { energyKcal, sugars, saturatedFat, salt, fruitsVegNuts, fiber, proteins } = req.body;
+app.post('/nutriscore', async (req, res) => {
+  const { energy_kcal, sugars, saturated_fat, salt, fruits_veg_nuts, fiber, proteins } = req.body;
 
-  if (
-    energyKcal === undefined ||
-    sugars === undefined ||
-    saturatedFat === undefined ||
-    salt === undefined ||
-    fruitsVegNuts === undefined ||
-    fiber === undefined ||
-    proteins === undefined
-  ) {
-    return res.status(400).json({ error: 'All input fields are required' });
+  try {
+    const response = await axios.post('https://your-model-service-2138847083.asia-southeast2.run.app/predict/', {
+      energy_kcal,
+      sugars,
+      saturated_fat,
+      salt,
+      fruits_veg_nuts,
+      fiber,
+      proteins
+    });
+
+    res.json({ predicted_grade: response.data.predicted_grade });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to get prediction from backend' });
+  }
+});
+
+app.post('/register', async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    const userRecord = await admin.auth().createUser({
+      displayName: name,
+      email: email,
+      password: password
+    });
+
+    const uniqueProfileImage = `profile-${userRecord.uid}.jpg`;
+
+    const bucketName = 'user-image-tepi';
+    const bucket = storage.bucket(bucketName);
+    const defaultProfileImage = 'profile.jpg';
+
+    const fileExists = await bucket.file(defaultProfileImage).exists();
+    if (!fileExists) {
+      return res.status(500).json({ message: 'Default profile image not found in storage' });
+    }
+
+    await bucket.file(defaultProfileImage).copy(bucket.file(uniqueProfileImage));
+    const profileImageUrl = `https://storage.googleapis.com/${bucketName}/${uniqueProfileImage}`;
+
+    const userData = {
+      displayName: name,
+      email: email,
+      userId: userRecord.uid,
+      profileImage: profileImageUrl
+    };
+    await firestoreDb.collection('users').doc(userRecord.uid).set(userData);
+
+    res.status(200).json({ error: false, message: 'Pengguna berhasil terdaftar', userId: userRecord.uid });
+  } catch (error) {
+    console.error('Detailed Registration Error:', {
+      message: error.message,
+      code: error.code,
+      stack: error.stack
+    });
+    res.status(400).json({
+      error: true,
+      message: error.message,
+      code: error.code
+    });
+  };
+});
+
+app.post('/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const userRecord = await admin.auth().getUserByEmail(email);
+    const token = await admin.auth().createCustomToken(userRecord.uid);
+
+    const doc = await firestoreDb.collection('users').doc(userRecord.uid).get();
+    const userData = doc.data();
+
+    res.status(200).json({
+      error: false,
+      message: 'success',
+      loginResult: {
+        userId: userRecord.uid,
+        name: userData.name,
+        token: token
+      }
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.post('/saveProduct', authUser, async (req, res) => {
+  const { productData } = req.body;
+  const userId = req.user.uid;
+
+  if (!productData) {
+    return res.status(400).json({ message: 'Product data are required' });
   }
 
   try {
-    const predictedGrade = await predictNutriScore(
-      energyKcal,
-      sugars,
-      saturatedFat,
-      salt,
-      fruitsVegNuts,
-      fiber,
-      proteins
-    );
+    const userRef = firestoreDb.collection('users').doc(userId);
+    const savedProductsRef = userRef.collection('savedProducts');
 
-    res.status(200).json({ grade: predictedGrade });
+    await savedProductsRef.add(productData);
+
+    return res.status(200).json({ message: 'Product saved successfully.' });
   } catch (error) {
-    console.error('Prediction error:', error.message);
-    if (error.message === 'Model is not loaded') {
-      res.status(500).json({ error: 'Model not loaded. Please try again later.' });
-    } else {
-      res.status(500).json({ error: 'Failed to predict Nutri-Score' });
-    }
+    console.error('Error saving product:', error);
+    return res.status(500).json({ message: 'Error saving product' });
+  }
+});
+
+app.post('/logout', (req, res) => {
+  try {
+    res.status(200).json({ error: false, message: 'Pengguna berhasil logout' });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, async () => {
   console.log(`Server is running on port ${PORT}`);
-  await loadModel(); 
 });
