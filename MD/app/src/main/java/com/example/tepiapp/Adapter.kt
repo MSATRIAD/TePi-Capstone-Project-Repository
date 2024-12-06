@@ -11,6 +11,7 @@ class Adapter(private var productList: List<ListProductItem>, private val onItem
 
     inner class ProductViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val productName: TextView = view.findViewById(R.id.tvProductName)
+        val nutrigradeLabel: TextView = view.findViewById(R.id.tvNutrigradeLabel)
         val productGrade: TextView = view.findViewById(R.id.tvProductGrade)
     }
 
@@ -24,10 +25,12 @@ class Adapter(private var productList: List<ListProductItem>, private val onItem
         val event = productList[position]
 
         holder.productName.text = event.name
-        holder.productGrade.text = event.grade
+        holder.nutrigradeLabel.text = holder.itemView.context.getString(R.string.nutrigrade_label)
+
+        holder.productGrade.text = event.grade.uppercase()
 
         holder.itemView.setOnClickListener {
-            onItemClick(event) // Panggil callback dengan data produk yang diklik
+            onItemClick(event)
         }
     }
 

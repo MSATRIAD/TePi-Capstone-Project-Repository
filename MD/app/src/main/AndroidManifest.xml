@@ -36,6 +36,10 @@
             android:name=".ui.forgot.ForgotActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.result.ResultActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+        <activity
             android:name=".ui.detail.DetailProductActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
