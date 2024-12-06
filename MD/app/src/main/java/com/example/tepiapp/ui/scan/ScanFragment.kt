@@ -1,5 +1,6 @@
 package com.example.tepiapp.ui.scan
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +13,7 @@ import com.example.tepiapp.data.api.ApiConfig
 import com.example.tepiapp.data.response.NutriscoreRequest
 import com.example.tepiapp.data.response.NutriscoreResponse
 import com.example.tepiapp.databinding.FragmentScanBinding
+import com.example.tepiapp.ui.result.ResultActivity
 import getImageUri
 import retrofit2.Call
 import retrofit2.Callback
@@ -107,6 +109,13 @@ class ScanFragment : Fragment() {
     }
 
     private fun submitData() {
+        // Ambil nama produk yang dimasukkan oleh pengguna
+        val productName = binding.etProductName.text.toString().trim()
+        if (productName.isEmpty()) {
+            Toast.makeText(requireContext(), "Nama produk harus diisi", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val energyKcal = binding.etTotalEnergy.text.toString().toFloatOrNull()
         val sugars = binding.etSugar.text.toString().toFloatOrNull()
         val saturatedFat = binding.etFat.text.toString().toFloatOrNull()
@@ -121,7 +130,6 @@ class ScanFragment : Fragment() {
             return
         }
 
-        // Panggil API untuk mendapatkan predicted_grade
         val apiService = ApiConfig.getApiService()
         val request = NutriscoreRequest(
             energyKcal = energyKcal!!,
@@ -135,9 +143,17 @@ class ScanFragment : Fragment() {
         apiService.predict(request).enqueue(object : Callback<NutriscoreResponse> {
             override fun onResponse(call: Call<NutriscoreResponse>, response: Response<NutriscoreResponse>) {
                 if (response.isSuccessful) {
-                    val predictedGrade = response.body()?.predictedGrade
-                    binding.tvPredictedGrade.text = "Predicted Grade: $predictedGrade"
-                    binding.tvPredictedGrade.visibility = View.VISIBLE
+                    val intent = Intent(requireContext(), ResultActivity::class.java).apply {
+                        putExtra("productName", productName) // Kirimkan nama produk
+                        putExtra("energyKcal", energyKcal)
+                        putExtra("sugars", sugars)
+                        putExtra("saturatedFat", saturatedFat)
+                        putExtra("salt", salt)
+                        putExtra("fruitsVegNuts", fruitsVegNuts)
+                        putExtra("fiber", fiber)
+                        putExtra("proteins", proteins)
+                    }
+                    startActivity(intent)
                 } else {
                     Toast.makeText(requireContext(), "Gagal mendapatkan prediksi", Toast.LENGTH_SHORT).show()
                 }
@@ -148,7 +164,6 @@ class ScanFragment : Fragment() {
             }
         })
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

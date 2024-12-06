@@ -58,10 +58,11 @@ class DetailProductActivity : AppCompatActivity() {
 
     private fun updateUI(detail: ListDetailItem) {
         binding.tvProductName.text = detail.productName
+
         binding.tvEnergyKcal.text = getString(R.string.energy_kcal, detail.energyKcal100g)
         binding.tvFiber.text = getString(R.string.fiber, detail.fiber100g)
         binding.tvFruitsVegetables.text = getString(R.string.fruits_vegetables, detail.fruitsVegetablesNutsEstimateFromIngredients100g)
-        binding.tvNutriscoreGrade.text = getString(R.string.nutriscore_grade, detail.nutriscoreGrade)
+        binding.tvNutriscoreGrade.text = getString(R.string.nutriscore_grade, detail.nutriscoreGrade.uppercase())
         binding.tvProteins.text = getString(R.string.proteins, detail.proteins100g)
         binding.tvSalt.text = getString(R.string.salt, detail.salt100g)
         binding.tvSaturatedFat.text = getString(R.string.saturated_fat, detail.saturatedFat100g)
