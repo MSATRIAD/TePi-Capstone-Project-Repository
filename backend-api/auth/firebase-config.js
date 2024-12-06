@@ -1,6 +1,8 @@
 const { initializeApp } = require('firebase/app');
 const { getAuth } = require('firebase/auth');
 const { getFirestore } = require('firebase/firestore');
+const { getDatabase } = require('firebase/database');
+
 
 const firebaseConfig = { 
     apiKey: "AIzaSyBYxMvGnHj9f6wNARHCk0CpVNLQEAVNBjM", 
@@ -10,8 +12,9 @@ const firebaseConfig = {
     appId: "1:2138847083:android:0e9294714a09944857fe2e" 
 };
 
+const realtimeDb = getDatabase(app); 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-module.exports = { auth, db };
+module.exports = { auth, db, realtimeDb };
