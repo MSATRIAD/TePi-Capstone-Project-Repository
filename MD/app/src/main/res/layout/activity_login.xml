@@ -34,7 +34,7 @@
         android:hint="@string/email"
         android:layout_marginBottom="16dp">
 
-        <com.example.tepiapp.MyEditText
+        <com.example.tepiapp.EmailCustomView
             android:id="@+id/ed_login_email"
             android:layout_width="match_parent"
             android:layout_height="56dp"
@@ -52,7 +52,7 @@
         app:endIconMode="password_toggle"
         android:layout_marginBottom="16dp">
 
-        <com.example.tepiapp.MyEditText
+        <com.example.tepiapp.PasswordCustomView
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="56dp"

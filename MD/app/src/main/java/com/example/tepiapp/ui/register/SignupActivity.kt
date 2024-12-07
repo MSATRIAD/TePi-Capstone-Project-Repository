@@ -7,16 +7,17 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.example.tepiapp.MyEditText
 import com.example.tepiapp.R
 import com.example.tepiapp.ui.catalog.CatalogFragment
 import com.example.tepiapp.ui.login.LoginActivity
 import com.google.android.material.textfield.TextInputEditText
 
 class SignupActivity : AppCompatActivity() {
-    private lateinit var edSignUpEmail: TextInputEditText
+    private lateinit var edSignUpEmail: MyEditText
     private lateinit var edSignUpUsername: TextInputEditText
-    private lateinit var edSignUpPassword: TextInputEditText
-    private lateinit var edConfirmPassword: TextInputEditText
+    private lateinit var edSignUpPassword: MyEditText
+    private lateinit var edConfirmPassword: MyEditText
     private lateinit var signUpButton: Button
     private lateinit var signInText: TextView
 
