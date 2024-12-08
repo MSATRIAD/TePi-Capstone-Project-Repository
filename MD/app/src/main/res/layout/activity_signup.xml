@@ -1,5 +1,7 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -29,23 +31,6 @@
             android:gravity="start" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/emailLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/email"
-            android:layout_marginBottom="16dp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/ed_sign_up_email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:textSize="16sp"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/usernameLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -55,7 +40,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/ed_sign_up_username"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="56dp"
                 android:inputType="textPersonName"
                 android:textSize="16sp"
                 android:paddingStart="16dp"
@@ -63,16 +48,34 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/emailLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/email"
+            android:layout_marginBottom="16dp">
+
+            <com.example.tepiapp.MyEditText
+                android:id="@+id/ed_sign_up_email"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:inputType="textEmailAddress"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textSize="16sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/passwordLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/password"
+            app:endIconMode="password_toggle"
             android:layout_marginBottom="16dp">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <com.example.tepiapp.MyEditText
                 android:id="@+id/ed_sign_up_password"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="56dp"
                 android:inputType="textPassword"
                 android:textSize="16sp"
                 android:paddingStart="16dp"
@@ -84,50 +87,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/confirm_password"
+            app:endIconMode="password_toggle"
             android:layout_marginBottom="16dp">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <com.example.tepiapp.MyEditText
                 android:id="@+id/ed_confirm_password"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="56dp"
                 android:inputType="textPassword"
                 android:textSize="16sp"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="16dp">
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:hint="@string/otp_code">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/ed_otp_code"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="number"
-                    android:textSize="16sp"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <Button
-                android:id="@+id/sendOtpButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/send"
-                android:backgroundTint="@android:color/holo_blue_dark"
-                android:textColor="@android:color/white"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="-9dp" />
-        </LinearLayout>
 
         <Button
             android:id="@+id/signUpButton"
