@@ -22,15 +22,18 @@ class Adapter(private var productList: List<ListProductItem>, private val onItem
     }
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
-        val event = productList[position]
+        val product = productList[position]
 
-        holder.productName.text = event.name
+        // Set the product name and nutrigrade label
+        holder.productName.text = product.name
         holder.nutrigradeLabel.text = holder.itemView.context.getString(R.string.nutrigrade_label)
 
-        holder.productGrade.text = event.grade.uppercase()
+        // Safely handle null grades
+        holder.productGrade.text = product.grade
 
+        // Set the click listener
         holder.itemView.setOnClickListener {
-            onItemClick(event)
+            onItemClick(product)
         }
     }
 
@@ -38,6 +41,7 @@ class Adapter(private var productList: List<ListProductItem>, private val onItem
         return productList.size
     }
 
+    // Method to update the list
     fun updateData(newProductList: List<ListProductItem>) {
         productList = newProductList
         notifyDataSetChanged()

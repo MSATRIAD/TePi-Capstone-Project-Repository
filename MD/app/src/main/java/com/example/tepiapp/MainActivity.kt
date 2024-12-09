@@ -45,4 +45,9 @@ class MainActivity : AppCompatActivity() {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         }
     }
+
+    override fun onBackPressed() {
+        super.onBackPressed()  // Call the super method to handle default back press behavior
+        finishAffinity()  // Close the app when back is pressed
+    }
 }

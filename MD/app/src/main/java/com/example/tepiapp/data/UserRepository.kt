@@ -46,27 +46,14 @@ class UserRepository private constructor(
         }
     }
 
-    // Fungsi untuk mendapatkan detail produk berdasarkan ID
-//    fun getDetailProducts(id: String): ListDetailItem {
-//        val response = apiService.getDetailProducts(id).execute()
-//        if (response.isSuccessful) {
-//            return response.body() ?: throw Exception("Product details not found")
-//        } else {
-//            throw Exception("Failed to fetch product details: ${response.code()} - ${response.message()}")
-//        }
-//    }
-//
-    // Fungsi untuk melakukan prediksi Nutriscore
-    fun predictNutriscore(data: NutriscoreRequest): NutriscoreResponse {
-        val response = apiService.predict(data).execute()
-        if (response.isSuccessful) {
-            return response.body() ?: throw Exception("Prediction failed")
-        } else {
-            throw Exception("Error: ${response.code()} - ${response.message()}")
+    suspend fun predictNutriscore(data: NutriscoreRequest): Response<NutriscoreResponse> {
+        return try {
+            apiService.predict(data)
+        } catch (e: Exception) {
+            throw Exception("Prediction failed: ${e.message}", e)
         }
     }
 
-    // Fungsi untuk mendapatkan detail produk berdasarkan ID
     suspend fun getDetailProducts(id: String): ListDetailItem {
         return try {
             apiService.getDetailProducts(id)
@@ -75,26 +62,14 @@ class UserRepository private constructor(
         }
     }
 
-//    // Fungsi untuk melakukan prediksi Nutriscore
-//    suspend fun predictNutriscore(data: NutriscoreRequest): NutriscoreResponse {
-//        return try {
-//            apiService.predict(data)
-//        } catch (e: Exception) {
-//            throw Exception("Prediction failed: ${e.message}", e)
-//        }
-//    }
-
-    // Fungsi untuk menyimpan sesi pengguna
     suspend fun saveSession(user: UserModel) {
         userPreference.saveSession(user)
     }
 
-    // Fungsi untuk mendapatkan sesi pengguna
     fun getSession(): Flow<UserModel> {
         return userPreference.getSession()
     }
 
-    // Fungsi logout
     suspend fun logout() {
         userPreference.logout()
     }

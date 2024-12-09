@@ -46,7 +46,7 @@ class CatalogViewModel(private val userRepository: UserRepository) : ViewModel()
     fun getSession() {
         viewModelScope.launch {
             try {
-                val session = userRepository.getSession().first() // Mengambil data sesi pengguna
+                val session = userRepository.getSession().first()
                 _userSession.value = session
             } catch (e: Exception) {
                 _errorMessage.value = "Failed to get session: ${e.message}"

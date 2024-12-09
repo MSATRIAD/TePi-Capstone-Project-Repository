@@ -1,15 +1,10 @@
-// SignupViewModel.kt
 package com.example.tepiapp.ui.register
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tepiapp.data.UserRepository
-import com.example.tepiapp.data.response.RegisterRequest
-import com.example.tepiapp.data.response.RegisterResponse
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Response
 
 class SignupViewModel(private val userRepository: UserRepository) : ViewModel() {
 
@@ -19,6 +14,7 @@ class SignupViewModel(private val userRepository: UserRepository) : ViewModel() 
     val confirmPassword = MutableLiveData<String>()
     val signupStatus = MutableLiveData<String>()
     val isSignupSuccess = MutableLiveData<Boolean>()
+    val isLoading = MutableLiveData<Boolean>()
 
     fun signup() {
         val emailInput = email.value?.trim()
@@ -38,17 +34,19 @@ class SignupViewModel(private val userRepository: UserRepository) : ViewModel() 
             return
         }
 
-        // Use viewModelScope.launch to call the register function in a coroutine
+        isLoading.value = true
+
         viewModelScope.launch {
             try {
                 val response = userRepository.register(usernameInput, emailInput, passwordInput)
+                isLoading.value = false
                 signupStatus.value = response.message
                 isSignupSuccess.value = !response.error
             } catch (e: Exception) {
+                isLoading.value = false
                 signupStatus.value = "Error: ${e.localizedMessage}"
                 isSignupSuccess.value = false
             }
         }
-
     }
 }

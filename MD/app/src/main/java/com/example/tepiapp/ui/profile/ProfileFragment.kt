@@ -8,9 +8,14 @@ import android.view.ViewGroup
 import android.widget.Switch
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.tepiapp.data.UserRepository
 import com.example.tepiapp.databinding.FragmentProfileBinding
 import com.example.tepiapp.ui.about.AboutActivity
 import com.example.tepiapp.ui.login.LoginActivity
+import com.example.tepiapp.data.api.ApiConfig
+import com.example.tepiapp.data.pref.UserPreference
+import com.example.tepiapp.data.api.ApiService
+import com.example.tepiapp.data.pref.dataStore
 
 class ProfileFragment : Fragment() {
 
@@ -26,10 +31,18 @@ class ProfileFragment : Fragment() {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        // Initialize ViewModel
-        profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
+        val token =
+            "your_token_here"
 
-        // Observe profile information (username and email)
+        val apiService: ApiService = ApiConfig.getApiService(token)
+
+        val userPreference = UserPreference.getInstance(requireContext().dataStore)
+
+        val userRepository = UserRepository.getInstance(userPreference, apiService)
+
+        val factory = ProfileViewModelFactory(requireActivity().application, userRepository)
+        profileViewModel = ViewModelProvider(this, factory).get(ProfileViewModel::class.java)
+
         profileViewModel.username.observe(viewLifecycleOwner) { username ->
             binding.username.text = username
         }
@@ -37,26 +50,28 @@ class ProfileFragment : Fragment() {
             binding.email.text = email
         }
 
-        // Observe Dark Mode preference
         val switchDarkMode: Switch = binding.switchDarkMode
         profileViewModel.isDarkMode.observe(viewLifecycleOwner) { isDarkMode ->
             switchDarkMode.isChecked = isDarkMode
         }
 
-        // Handle Dark Mode toggle
         switchDarkMode.setOnCheckedChangeListener { _, isChecked ->
             profileViewModel.setDarkMode(isChecked)
         }
 
-        // Navigate to About Us
         binding.aboutUsButton.setOnClickListener {
             val intent = Intent(requireContext(), AboutActivity::class.java)
             startActivity(intent)
         }
 
         binding.signOutButton.setOnClickListener {
-            val intent = Intent(requireContext(), LoginActivity::class.java)
+            profileViewModel.logout()
+
+            val intent = Intent(requireContext(), LoginActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
             startActivity(intent)
+
             activity?.finish()
         }
 

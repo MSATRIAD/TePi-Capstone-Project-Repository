@@ -9,12 +9,14 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.tepiapp.data.api.ApiConfig
 import com.example.tepiapp.data.response.NutriscoreRequest
 import com.example.tepiapp.data.response.NutriscoreResponse
 import com.example.tepiapp.databinding.FragmentScanBinding
 import com.example.tepiapp.ui.result.ResultActivity
 import getImageUri
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -23,19 +25,6 @@ class ScanFragment : Fragment() {
     private var _binding: FragmentScanBinding? = null
     private val binding get() = _binding!!
     private val viewModel: ScanViewModel by viewModels()
-
-    private var currentImageUri: Uri? = null
-
-    private val requestCameraPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (isGranted) {
-            startCamera()
-        } else {
-            // Handle the case when the user denies the permission
-            Log.e("Permission", "Camera permission denied")
-        }
-    }
 
     override fun onCreateView(
         inflater: android.view.LayoutInflater,
@@ -50,62 +39,10 @@ class ScanFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupListeners()
-        observeViewModel()
     }
 
     private fun setupListeners() {
-        binding.btnOpenCamera.setOnClickListener { checkCameraPermission() }
         binding.btnSubmitData.setOnClickListener { submitData() }
-    }
-
-    private fun observeViewModel() {
-        viewModel.imageUri.observe(viewLifecycleOwner) { uri ->
-            uri?.let {
-                currentImageUri = it
-                binding.ivCapturedImage.setImageURI(uri)
-            }
-        }
-    }
-
-    private fun checkCameraPermission() {
-        when {
-            requireContext().checkSelfPermission(android.Manifest.permission.CAMERA) ==
-                    android.content.pm.PackageManager.PERMISSION_GRANTED -> {
-                // Permission already granted
-                startCamera()
-            }
-            shouldShowRequestPermissionRationale(android.Manifest.permission.CAMERA) -> {
-                // Show rationale to the user (optional)
-                Log.d("Permission", "Camera permission rationale needed")
-                requestCameraPermissionLauncher.launch(android.Manifest.permission.CAMERA)
-            }
-            else -> {
-                // Directly request the permission
-                requestCameraPermissionLauncher.launch(android.Manifest.permission.CAMERA)
-            }
-        }
-    }
-
-    private fun startCamera() {
-        currentImageUri = getImageUri(requireContext())
-        launcherIntentCamera.launch(currentImageUri!!)
-    }
-
-    private val launcherIntentCamera = registerForActivityResult(
-        ActivityResultContracts.TakePicture()
-    ) { isSuccess ->
-        if (isSuccess) {
-            showImage()
-        } else {
-            currentImageUri = null
-        }
-    }
-
-    private fun showImage() {
-        currentImageUri?.let {
-            Log.d("Image URI", "showImage: $it")
-            binding.ivCapturedImage.setImageURI(it)
-        }
     }
 
     private fun submitData() {
@@ -124,9 +61,22 @@ class ScanFragment : Fragment() {
         val fiber = binding.etFiber.text.toString().toFloatOrNull()
         val proteins = binding.etProtein.text.toString().toFloatOrNull()
 
-        if (listOf(energyKcal, sugars, saturatedFat, salt, fruitsVegNuts, fiber, proteins).any { it == null }) {
+        if (listOf(
+                energyKcal,
+                sugars,
+                saturatedFat,
+                salt,
+                fruitsVegNuts,
+                fiber,
+                proteins
+            ).any { it == null }
+        ) {
             // Tampilkan pesan error jika ada input yang kosong
-            Toast.makeText(requireContext(), "Semua field harus diisi dengan benar", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                requireContext(),
+                "Semua field harus diisi dengan benar",
+                Toast.LENGTH_SHORT
+            ).show()
             return
         }
 
@@ -144,9 +94,10 @@ class ScanFragment : Fragment() {
             fiber = fiber!!,
             proteins = proteins!!
         )
-        apiService.predict(request).enqueue(object : Callback<NutriscoreResponse> {
-            override fun onResponse(call: Call<NutriscoreResponse>, response: Response<NutriscoreResponse>) {
-                if (response.isSuccessful) {
+        lifecycleScope.launch {
+            try {
+                val response = apiService.predict(request) // This is a suspend function call
+                if (response != null) {
                     val intent = Intent(requireContext(), ResultActivity::class.java).apply {
                         putExtra("productName", productName) // Kirimkan nama produk
                         putExtra("energyKcal", energyKcal)
@@ -159,14 +110,16 @@ class ScanFragment : Fragment() {
                     }
                     startActivity(intent)
                 } else {
-                    Toast.makeText(requireContext(), "Gagal mendapatkan prediksi", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "Gagal mendapatkan prediksi",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
-
-            override fun onFailure(call: Call<NutriscoreResponse>, t: Throwable) {
-                Toast.makeText(requireContext(), "Error: ${t.message}", Toast.LENGTH_SHORT).show()
-            }
-        })
+        }
     }
 
     override fun onDestroyView() {

@@ -46,7 +46,7 @@ class ResultViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val response = userRepository.predictNutriscore(request)
-                _nutriscoreGrade.value = response.predictedGrade ?: "Unknown"
+                _nutriscoreGrade.value = response.body()?.predictedGrade ?: "Unknown"
             } catch (e: Exception) {
                 _nutriscoreGrade.value = "Error"
             }

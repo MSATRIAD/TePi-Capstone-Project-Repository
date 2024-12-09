@@ -20,7 +20,7 @@ interface ApiService {
     suspend fun getDetailProducts(@Path("id") id: String): ListDetailItem
 
     @POST("nutriscore")
-    fun predict(@Body body: NutriscoreRequest): Call<NutriscoreResponse>
+    suspend fun predict(@Body body: NutriscoreRequest): Response<NutriscoreResponse>
 
     @POST("login")
     suspend fun login(@Body body: LoginRequest): Response<LoginResponse>

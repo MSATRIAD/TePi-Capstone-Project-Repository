@@ -78,10 +78,6 @@ class CatalogFragment : Fragment() {
         catalogViewModel.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
             Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
         }
-
-        catalogViewModel.userSession.observe(viewLifecycleOwner) { session ->
-            Toast.makeText(requireContext(), "Logged in as: ${session.email}", Toast.LENGTH_SHORT).show()
-        }
     }
 
     private fun setupRecyclerView() {

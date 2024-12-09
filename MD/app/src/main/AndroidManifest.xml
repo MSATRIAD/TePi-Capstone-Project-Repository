@@ -34,9 +34,6 @@
         <activity
             android:name=".ui.about.AboutActivity"
             android:exported="false" />
-        <!--        <activity-->
-        <!--            android:name=".ui.forgot.ForgotActivity"-->
-        <!--            android:exported="false" />-->
         <activity
             android:name=".ui.result.ResultActivity"
             android:exported="false"

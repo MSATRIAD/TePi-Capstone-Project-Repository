@@ -42,5 +42,7 @@
     <string name="detail_product">Detail Product</string>
     <string name="nutrigrade_label">Nutrigrade:</string>
     <string name="result_product">Result Product\n</string>
+    <string name="chatbot">Chatbot</string>
+    <string name="save_product">Save Product</string>
 
 </resources>

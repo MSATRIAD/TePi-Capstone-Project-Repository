@@ -18,10 +18,13 @@ class LoginViewModel(
     private val userPreference: UserPreference,
     private val apiService: ApiService
 ) : ViewModel() {
+
     val email = MutableLiveData<String>()
     val password = MutableLiveData<String>()
     val loginStatus = MutableLiveData<String>()
     val isLoginSuccess = MutableLiveData<Boolean>()
+    val isLoading = MutableLiveData<Boolean>()
+    var successMessage: String = ""
 
     fun login() {
         val emailInput = email.value?.trim()
@@ -34,18 +37,19 @@ class LoginViewModel(
         }
 
         viewModelScope.launch {
+            isLoading.value = true
             try {
                 val response = apiService.login(LoginRequest(emailInput, passwordInput))
                 if (response.isSuccessful) {
                     val loginResponse = response.body()
                     if (loginResponse != null && !loginResponse.error) {
+                        successMessage = loginResponse.message  // Ambil pesan sukses dari API
                         val userModel = UserModel(
                             email = emailInput,
                             token = loginResponse.token,
                             isLogin = true
                         )
                         saveSession(userModel)
-                        loginStatus.value = "Login successful: ${loginResponse.message}"
                         isLoginSuccess.value = true
                     } else {
                         loginStatus.value = loginResponse?.message ?: "Invalid credentials"
@@ -61,11 +65,13 @@ class LoginViewModel(
             } catch (e: HttpException) {
                 loginStatus.value = "Server error: ${e.message}"
                 isLoginSuccess.value = false
+            } finally {
+                isLoading.value = false
             }
         }
     }
 
     private suspend fun saveSession(userModel: UserModel) {
-        userPreference.saveSession(userModel)  // Save user session with token
+        userPreference.saveSession(userModel)
     }
 }
