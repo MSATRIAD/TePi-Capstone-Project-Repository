@@ -7,6 +7,8 @@ import com.example.tepiapp.data.pref.UserModel
 import com.example.tepiapp.data.response.ListProductItem
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import java.io.IOException
+import java.net.SocketTimeoutException
 
 class CatalogViewModel(private val userRepository: UserRepository) : ViewModel() {
 
@@ -24,14 +26,19 @@ class CatalogViewModel(private val userRepository: UserRepository) : ViewModel()
 
     fun fetchProducts() {
         viewModelScope.launch {
-            _isLoading.value = true
+            _isLoading.postValue(true)
             try {
                 val products = userRepository.getProducts()
-                _productList.value = products
+                _productList.postValue(products)
             } catch (e: Exception) {
-                _errorMessage.value = e.message ?: "An error occurred"
+                val errorMessage = when (e) {
+                    is SocketTimeoutException -> "Request timed out. Please try again."
+                    is IOException -> "Failed to connect. Please check your internet connection."
+                    else -> "An unexpected error occurred: ${e.localizedMessage}"
+                }
+                _errorMessage.postValue(errorMessage)
             } finally {
-                _isLoading.value = false
+                _isLoading.postValue(false)
             }
         }
     }

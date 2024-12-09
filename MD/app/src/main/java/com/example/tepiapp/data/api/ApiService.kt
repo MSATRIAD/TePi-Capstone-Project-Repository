@@ -14,10 +14,10 @@ import retrofit2.http.*
 
 interface ApiService {
     @GET("products")
-    fun getProducts(): Call<List<ListProductItem>>
+    suspend fun getProducts(): List<ListProductItem>
 
     @GET("products/{id}")
-    fun getDetailProducts(@Path("id") id: String): Call<ListDetailItem>
+    suspend fun getDetailProducts(@Path("id") id: String): ListDetailItem
 
     @POST("nutriscore")
     fun predict(@Body body: NutriscoreRequest): Call<NutriscoreResponse>

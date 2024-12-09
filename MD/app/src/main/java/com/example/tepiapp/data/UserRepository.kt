@@ -38,25 +38,24 @@ class UserRepository private constructor(
         return response
     }
 
-    fun getProducts(): List<ListProductItem> {
-        val response = apiService.getProducts().execute()
-        if (response.isSuccessful) {
-            return response.body() ?: emptyList()
-        } else {
-            throw Exception("Failed to fetch products: ${response.code()} - ${response.message()}")
+    suspend fun getProducts(): List<ListProductItem> {
+        return try {
+            apiService.getProducts()
+        } catch (e: Exception) {
+            throw Exception("Failed to fetch products: ${e.message}")
         }
     }
 
     // Fungsi untuk mendapatkan detail produk berdasarkan ID
-    fun getDetailProducts(id: String): ListDetailItem {
-        val response = apiService.getDetailProducts(id).execute()
-        if (response.isSuccessful) {
-            return response.body() ?: throw Exception("Product details not found")
-        } else {
-            throw Exception("Failed to fetch product details: ${response.code()} - ${response.message()}")
-        }
-    }
-
+//    fun getDetailProducts(id: String): ListDetailItem {
+//        val response = apiService.getDetailProducts(id).execute()
+//        if (response.isSuccessful) {
+//            return response.body() ?: throw Exception("Product details not found")
+//        } else {
+//            throw Exception("Failed to fetch product details: ${response.code()} - ${response.message()}")
+//        }
+//    }
+//
     // Fungsi untuk melakukan prediksi Nutriscore
     fun predictNutriscore(data: NutriscoreRequest): NutriscoreResponse {
         val response = apiService.predict(data).execute()
@@ -66,6 +65,24 @@ class UserRepository private constructor(
             throw Exception("Error: ${response.code()} - ${response.message()}")
         }
     }
+
+    // Fungsi untuk mendapatkan detail produk berdasarkan ID
+    suspend fun getDetailProducts(id: String): ListDetailItem {
+        return try {
+            apiService.getDetailProducts(id)
+        } catch (e: Exception) {
+            throw Exception("Failed to fetch product details: ${e.message}", e)
+        }
+    }
+
+//    // Fungsi untuk melakukan prediksi Nutriscore
+//    suspend fun predictNutriscore(data: NutriscoreRequest): NutriscoreResponse {
+//        return try {
+//            apiService.predict(data)
+//        } catch (e: Exception) {
+//            throw Exception("Prediction failed: ${e.message}", e)
+//        }
+//    }
 
     // Fungsi untuk menyimpan sesi pengguna
     suspend fun saveSession(user: UserModel) {

@@ -59,9 +59,9 @@ class CatalogFragment : Fragment() {
             val factory = CatalogViewModelFactory(userRepository)
             catalogViewModel = ViewModelProvider(this@CatalogFragment, factory).get(CatalogViewModel::class.java)
 
+            catalogViewModel.getSession()
             catalogViewModel.fetchProducts()
 
-            catalogViewModel.getSession()
         }
     }
 
