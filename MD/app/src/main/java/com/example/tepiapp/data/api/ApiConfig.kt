@@ -1,18 +1,15 @@
 package com.example.tepiapp.data.api
 
-import android.content.Context
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class ApiConfig {
-    companion object{
-        fun getApiService(context: Context): ApiService {
-            val preferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-            val token = preferences.getString("user_token", "")
-
-            val loggingInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+    companion object {
+        fun getApiService(token: String?): ApiService {
+            val loggingInterceptor =
+                HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
 
             val client = OkHttpClient.Builder()
                 .addInterceptor { chain ->
@@ -36,6 +33,5 @@ class ApiConfig {
 
             return retrofit.create(ApiService::class.java)
         }
-
     }
 }

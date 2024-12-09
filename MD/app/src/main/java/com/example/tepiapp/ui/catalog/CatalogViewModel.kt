@@ -1,16 +1,14 @@
-package com.example.tepiapp.ui.catalog
-
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.tepiapp.data.api.ApiConfig
+import androidx.lifecycle.viewModelScope
+import com.example.tepiapp.data.UserRepository
+import com.example.tepiapp.data.pref.UserModel
 import com.example.tepiapp.data.response.ListProductItem
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
-class CatalogViewModel : ViewModel() {
+class CatalogViewModel(private val userRepository: UserRepository) : ViewModel() {
 
     private val _productList = MutableLiveData<List<ListProductItem>>()
     val productList: LiveData<List<ListProductItem>> = _productList
@@ -21,34 +19,31 @@ class CatalogViewModel : ViewModel() {
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> = _errorMessage
 
-    companion object {
-        private const val TAG = "CatalogViewModel"
+    private val _userSession = MutableLiveData<UserModel>()
+    val userSession: LiveData<UserModel> = _userSession
+
+    fun fetchProducts() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                val products = userRepository.getProducts()
+                _productList.value = products
+            } catch (e: Exception) {
+                _errorMessage.value = e.message ?: "An error occurred"
+            } finally {
+                _isLoading.value = false
+            }
+        }
     }
 
-    init {
-        fetchProducts()
-    }
-
-    fun fetchProducts(){
-        _isLoading.value = true
-        val client = ApiConfig.getApiService().getProducts()
-        client.enqueue(object : Callback<List<ListProductItem>> {
-            override fun onResponse(call: Call<List<ListProductItem>>, response: Response<List<ListProductItem>>) {
-                _isLoading.value = false
-                if (response.isSuccessful) {
-                    _productList.value = response.body() ?: emptyList()
-                    Log.d(TAG, "Fetched products: ${_productList.value}")
-                } else {
-                    _errorMessage.value = "Error: ${response.message()}"
-                    Log.e(TAG, "onFailure: ${response.message()}")
-                }
+    fun getSession() {
+        viewModelScope.launch {
+            try {
+                val session = userRepository.getSession().first() // Mengambil data sesi pengguna
+                _userSession.value = session
+            } catch (e: Exception) {
+                _errorMessage.value = "Failed to get session: ${e.message}"
             }
-
-            override fun onFailure(call: Call<List<ListProductItem>>, t: Throwable) {
-                _isLoading.value = false
-                _errorMessage.value = "Failure: ${t.message}"
-                Log.e(TAG, "onFailure: ${t.message}")
-            }
-        })
+        }
     }
 }

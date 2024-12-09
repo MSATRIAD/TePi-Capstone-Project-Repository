@@ -4,10 +4,18 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.tepiapp.R
+import com.example.tepiapp.data.UserRepository
+import com.example.tepiapp.data.api.ApiConfig
+import com.example.tepiapp.data.pref.UserPreference
+import com.example.tepiapp.data.pref.dataStore
 import com.example.tepiapp.databinding.ActivityResultBinding
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class ResultActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivityResultBinding
     private val viewModel: ResultViewModel by viewModels()
 
@@ -37,7 +45,19 @@ class ResultActivity : AppCompatActivity() {
         binding.tvProteins.text = "$proteins g"
 
         // Memproses data menggunakan ResultViewModel
-        viewModel.getNutriscoreGrade(energyKcal, sugars, saturatedFat, salt, fruitsVegNuts, fiber, proteins)
+        lifecycleScope.launch {
+            val userPreference = UserPreference.getInstance(this@ResultActivity.dataStore)
+            val token = userPreference.getSession().first().token
+            val apiService = ApiConfig.getApiService(token)
+
+            val userRepository = UserRepository.getInstance(userPreference, apiService)
+            viewModel.setUserRepository(userRepository)
+
+            // Memanggil fungsi prediksi Nutriscore dari ViewModel
+            viewModel.predictNutriscore(
+                energyKcal, sugars, saturatedFat, salt, fruitsVegNuts, fiber, proteins
+            )
+        }
 
         // Observasi hasil grade Nutriscore
         viewModel.nutriscoreGrade.observe(this) { grade ->

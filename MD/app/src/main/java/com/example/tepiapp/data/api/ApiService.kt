@@ -9,6 +9,7 @@ import com.example.tepiapp.data.response.NutriscoreResponse
 import com.example.tepiapp.data.response.RegisterRequest
 import com.example.tepiapp.data.response.RegisterResponse
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.*
 
 interface ApiService {
@@ -22,8 +23,8 @@ interface ApiService {
     fun predict(@Body body: NutriscoreRequest): Call<NutriscoreResponse>
 
     @POST("login")
-    fun login(@Body body: LoginRequest): Call<LoginResponse>
+    suspend fun login(@Body body: LoginRequest): Response<LoginResponse>
 
     @POST("register")
-    fun register(@Body body: RegisterRequest): Call<RegisterResponse>
+    suspend fun register(@Body body: RegisterRequest): RegisterResponse
 }

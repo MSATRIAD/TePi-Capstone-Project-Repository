@@ -7,21 +7,38 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.example.tepiapp.EmailCustomView
 import com.example.tepiapp.MyEditText
+import com.example.tepiapp.PasswordCustomView
 import com.example.tepiapp.R
+import com.example.tepiapp.data.UserRepository
+import com.example.tepiapp.data.api.ApiConfig
+import com.example.tepiapp.data.pref.UserPreference
+import com.example.tepiapp.data.pref.dataStore
 import com.example.tepiapp.ui.catalog.CatalogFragment
 import com.example.tepiapp.ui.login.LoginActivity
 import com.google.android.material.textfield.TextInputEditText
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 
 class SignupActivity : AppCompatActivity() {
-    private lateinit var edSignUpEmail: MyEditText
+
+    private lateinit var edSignUpEmail: EmailCustomView
     private lateinit var edSignUpUsername: TextInputEditText
-    private lateinit var edSignUpPassword: MyEditText
+    private lateinit var edSignUpPassword: PasswordCustomView
     private lateinit var edConfirmPassword: MyEditText
     private lateinit var signUpButton: Button
     private lateinit var signInText: TextView
 
-    private val signupViewModel: SignupViewModel by viewModels()
+    private val signupViewModel: SignupViewModel by viewModels {
+        val pref = UserPreference.getInstance(applicationContext.dataStore)
+        val token = runBlocking { pref.getSession().first().token }
+
+        SignupViewModelFactory(
+            pref,
+            ApiConfig.getApiService(token)
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
