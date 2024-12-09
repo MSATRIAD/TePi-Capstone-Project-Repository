@@ -130,7 +130,11 @@ class ScanFragment : Fragment() {
             return
         }
 
-        val apiService = ApiConfig.getApiService()
+        // Fetch token from shared preferences or repository
+        val token = "your_token_here" // Replace with actual token retrieval method
+
+        // Pass the token to the API service
+        val apiService = ApiConfig.getApiService(token)
         val request = NutriscoreRequest(
             energyKcal = energyKcal!!,
             sugars = sugars!!,

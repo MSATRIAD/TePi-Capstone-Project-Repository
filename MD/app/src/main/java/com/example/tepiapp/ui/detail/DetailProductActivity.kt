@@ -4,15 +4,18 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.tepiapp.R
-import com.example.tepiapp.data.api.ApiConfig
-import com.example.tepiapp.data.response.ListDetailItem
+import com.example.tepiapp.data.UserRepository
 import com.example.tepiapp.databinding.ActivityDetailBinding
+import com.example.tepiapp.di.Injection
+import com.example.tepiapp.data.response.ListDetailItem
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class DetailProductActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailBinding
-
     private val viewModel: DetailProductViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,9 +24,6 @@ class DetailProductActivity : AppCompatActivity() {
         binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val apiService = ApiConfig.getApiService()
-        viewModel.setApiService(apiService)
-
         val productId = intent.getStringExtra("productId")
 
         if (productId.isNullOrEmpty()) {
@@ -31,6 +31,16 @@ class DetailProductActivity : AppCompatActivity() {
             return
         }
 
+        // Initialize UserRepository using Injection
+        val userRepository = Injection.provideRepository(this)
+        viewModel.setUserRepository(userRepository)
+
+        // Use lifecycleScope to call suspend function
+        lifecycleScope.launch {
+            viewModel.getProductDetails(productId)
+        }
+
+        // Observe product details
         viewModel.productDetail.observe(this) { response ->
             if (response != null) {
                 updateUI(response)
@@ -38,8 +48,6 @@ class DetailProductActivity : AppCompatActivity() {
                 Toast.makeText(this, "Error fetching product details", Toast.LENGTH_SHORT).show()
             }
         }
-
-        viewModel.getProductDetails(productId)
 
         viewModel.isLoading.observe(this) { isLoading ->
             binding.progressBar.visibility = if (isLoading) android.view.View.VISIBLE else android.view.View.GONE
