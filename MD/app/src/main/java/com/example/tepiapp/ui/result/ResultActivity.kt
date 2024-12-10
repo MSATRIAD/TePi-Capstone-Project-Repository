@@ -10,6 +10,8 @@ import com.example.tepiapp.data.UserRepository
 import com.example.tepiapp.data.api.ApiConfig
 import com.example.tepiapp.data.pref.UserPreference
 import com.example.tepiapp.data.pref.dataStore
+import com.example.tepiapp.data.response.ListDetailItem
+import com.example.tepiapp.data.response.SaveRequest
 import com.example.tepiapp.databinding.ActivityResultBinding
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -66,6 +68,29 @@ class ResultActivity : AppCompatActivity() {
 
         binding.topAppBar.setNavigationOnClickListener {
             finish()
+        }
+
+        binding.fabSaveProduct.setOnClickListener {
+            // Buat objek SaveRequest
+            val productData = ListDetailItem(
+                productName = productName,
+                energyKcal100g = energyKcal,
+                sugars100g = sugars,
+                saturatedFat100g = saturatedFat,
+                salt100g = salt,
+                fruitsVegetablesNutsEstimateFromIngredients100g = fruitsVegNuts,
+                fiber100g = fiber,
+                proteins100g = proteins,
+                nutriscoreGrade = binding.tvNutriscoreGrade.text.toString()
+            )
+            val saveRequest = SaveRequest(productData)
+
+            // Panggil ViewModel untuk menyimpan data
+            viewModel.saveProduct(saveRequest)
+        }
+
+        viewModel.saveStatus.observe(this) { status ->
+            Toast.makeText(this, status, Toast.LENGTH_SHORT).show()
         }
     }
 }

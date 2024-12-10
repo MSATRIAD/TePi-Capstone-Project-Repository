@@ -1,6 +1,5 @@
 package com.example.tepiapp.ui.catalog
 
-import CatalogViewModel
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,15 +12,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.tepiapp.Adapter
-import com.example.tepiapp.data.UserRepository
-import com.example.tepiapp.data.api.ApiConfig
-import com.example.tepiapp.data.pref.UserPreference
-import com.example.tepiapp.data.pref.dataStore
 import com.example.tepiapp.data.response.ListProductItem
 import com.example.tepiapp.databinding.FragmentCatalogBinding
 import com.example.tepiapp.di.Injection
 import com.example.tepiapp.ui.detail.DetailProductActivity
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class CatalogFragment : Fragment() {

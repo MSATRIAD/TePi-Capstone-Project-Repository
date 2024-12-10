@@ -62,6 +62,30 @@ class UserRepository private constructor(
         }
     }
 
+    suspend fun saveProduct(data: SaveRequest): Response<SaveResponse>{
+        return try {
+            apiService.saveProduct(data)
+        } catch (e: Exception) {
+            throw Exception("Failed to save data: ${e.message}", e)
+        }
+    }
+
+    suspend fun getAllSaveProduct(): List<ListProductItem>{
+        return try {
+            apiService.getAllSaveProduct()
+        } catch (e: Exception) {
+            throw Exception("Failed to fetch save product: ${e.message}", e)
+        }
+    }
+
+    suspend fun getDetailSaveProduct(id: String): ListDetailItem {
+        return try {
+            apiService.getDetailSaveProduct(id)
+        } catch (e: Exception) {
+            throw Exception("Failed to fetch product details: ${e.message}", e)
+        }
+    }
+
     suspend fun saveSession(user: UserModel) {
         userPreference.saveSession(user)
     }
@@ -75,14 +99,15 @@ class UserRepository private constructor(
     }
 
     companion object {
-        @Volatile
-        private var instance: UserRepository? = null
-        fun getInstance(
-            userPreference: UserPreference,
-            apiService: ApiService
-        ): UserRepository =
-            instance ?: synchronized(this) {
-                instance ?: UserRepository(userPreference, apiService)
-            }.also { instance = it }
+        fun getInstance(userPreferences: UserPreference, apiService: ApiService) = UserRepository(userPreferences, apiService)
+//        @Volatile
+//        private var instance: UserRepository? = null
+//        fun getInstance(
+//            userPreference: UserPreference,
+//            apiService: ApiService
+//        ): UserRepository =
+//            instance ?: synchronized(this) {
+//                instance ?: UserRepository(userPreference, apiService)
+//            }.also { instance = it }
     }
 }

@@ -8,6 +8,7 @@ import com.example.tepiapp.data.UserRepository
 import com.example.tepiapp.data.api.ApiConfig
 import com.example.tepiapp.data.response.NutriscoreRequest
 import com.example.tepiapp.data.response.NutriscoreResponse
+import com.example.tepiapp.data.response.SaveRequest
 import kotlinx.coroutines.launch
 
 class ResultViewModel : ViewModel() {
@@ -16,6 +17,9 @@ class ResultViewModel : ViewModel() {
 
     private val _nutriscoreGrade = MutableLiveData<String>()
     val nutriscoreGrade: LiveData<String> get() = _nutriscoreGrade
+
+    private val _saveStatus = MutableLiveData<String>()
+    val saveStatus: LiveData<String> get() = _saveStatus
 
     // Set UserRepository
     fun setUserRepository(userRepository: UserRepository) {
@@ -49,6 +53,21 @@ class ResultViewModel : ViewModel() {
                 _nutriscoreGrade.value = response.body()?.predictedGrade ?: "Unknown"
             } catch (e: Exception) {
                 _nutriscoreGrade.value = "Error"
+            }
+        }
+    }
+
+    fun saveProduct(data: SaveRequest) {
+        viewModelScope.launch {
+            try {
+                val response = userRepository.saveProduct(data)
+                if (response.isSuccessful) {
+                    _saveStatus.value = response.body()?.message ?: "Save successful"
+                } else {
+                    _saveStatus.value = "Failed to save product"
+                }
+            } catch (e: Exception) {
+                _saveStatus.value = "Error: ${e.message}"
             }
         }
     }

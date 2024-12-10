@@ -8,6 +8,8 @@ import com.example.tepiapp.data.response.NutriscoreRequest
 import com.example.tepiapp.data.response.NutriscoreResponse
 import com.example.tepiapp.data.response.RegisterRequest
 import com.example.tepiapp.data.response.RegisterResponse
+import com.example.tepiapp.data.response.SaveRequest
+import com.example.tepiapp.data.response.SaveResponse
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
@@ -27,4 +29,13 @@ interface ApiService {
 
     @POST("register")
     suspend fun register(@Body body: RegisterRequest): RegisterResponse
+
+    @POST("saveProduct")
+    suspend fun saveProduct(@Body body: SaveRequest): Response<SaveResponse>
+
+    @GET("allSaveProduct")
+    suspend fun getAllSaveProduct(): List<ListProductItem>
+
+    @GET("saveProduct/{id}")
+    suspend fun getDetailSaveProduct(@Path("id") id: String): ListDetailItem
 }
