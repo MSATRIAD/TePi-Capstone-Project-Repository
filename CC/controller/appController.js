@@ -57,7 +57,7 @@ const getProductById = async (req, res) => {
 const predictNutriscore = async (req, res) => {
   const { energy_kcal, sugars, saturated_fat, salt, fruits_veg_nuts, fiber, proteins } = req.body;
   try {
-    const response = await axios.post('https://your-model-service-2138847083.asia-southeast2.run.app/predict/', {
+    const response = await axios.post('https://model-backend-186840913924.asia-southeast2.run.app/predict/', {
       energy_kcal,
       sugars,
       saturated_fat,
