@@ -1,13 +1,20 @@
 package com.example.tepiapp.ui.profile
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Switch
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.example.tepiapp.R
 import com.example.tepiapp.data.UserRepository
 import com.example.tepiapp.databinding.FragmentProfileBinding
 import com.example.tepiapp.ui.about.AboutActivity
@@ -16,6 +23,11 @@ import com.example.tepiapp.data.api.ApiConfig
 import com.example.tepiapp.data.pref.UserPreference
 import com.example.tepiapp.data.api.ApiService
 import com.example.tepiapp.data.pref.dataStore
+import com.example.tepiapp.di.Injection
+import com.example.tepiapp.ui.catalog.CatalogViewModel
+import com.example.tepiapp.ui.catalog.CatalogViewModelFactory
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class ProfileFragment : Fragment() {
 
@@ -29,41 +41,57 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        return binding.root
+    }
 
-        val token =
-            "your_token_here"
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        val apiService: ApiService = ApiConfig.getApiService(token)
+        lifecycleScope.launch {
+            // Ambil token dari session
+            val userPreference = UserPreference.getInstance(requireContext().dataStore)
+            val token = userPreference.getSession().first().token // first() dipanggil dalam coroutine
+            val apiService = ApiConfig.getApiService(token)
+            val userRepository = UserRepository.getInstance(userPreference, apiService)
 
-        val userPreference = UserPreference.getInstance(requireContext().dataStore)
+            val factory = ProfileViewModelFactory(requireActivity().application, userRepository)
+            profileViewModel = ViewModelProvider(this@ProfileFragment, factory).get(ProfileViewModel::class.java)
 
-        val userRepository = UserRepository.getInstance(userPreference, apiService)
-
-        val factory = ProfileViewModelFactory(requireActivity().application, userRepository)
-        profileViewModel = ViewModelProvider(this, factory).get(ProfileViewModel::class.java)
-
-        profileViewModel.username.observe(viewLifecycleOwner) { username ->
-            binding.username.text = username
-        }
-        profileViewModel.email.observe(viewLifecycleOwner) { email ->
-            binding.email.text = email
+            profileViewModel.fetchProfile()
         }
 
+        // Amati data profil
+        profileViewModel.profile.observe(viewLifecycleOwner) { profile ->
+            binding.username.text = profile.displayName
+            binding.email.text = profile.email
+
+            // Muat gambar profil menggunakan Glide
+            Glide.with(this)
+//                .load(profile.profileImage)
+                .load("${profile.profileImage}?timestamp=${System.currentTimeMillis()}")
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .placeholder(R.drawable.ic_profile_black_24dp) // Gambar default
+                .into(binding.profileImage)
+        }
+
+        // Amati perubahan pada Dark Mode
         val switchDarkMode: Switch = binding.switchDarkMode
         profileViewModel.isDarkMode.observe(viewLifecycleOwner) { isDarkMode ->
             switchDarkMode.isChecked = isDarkMode
         }
 
+        // Atur pengendali untuk Dark Mode
         switchDarkMode.setOnCheckedChangeListener { _, isChecked ->
             profileViewModel.setDarkMode(isChecked)
         }
 
+        // Atur tindakan untuk tombol About Us
         binding.aboutUsButton.setOnClickListener {
             val intent = Intent(requireContext(), AboutActivity::class.java)
             startActivity(intent)
         }
 
+        // Atur tindakan untuk tombol Sign Out
         binding.signOutButton.setOnClickListener {
             profileViewModel.logout()
 
@@ -75,7 +103,9 @@ class ProfileFragment : Fragment() {
             activity?.finish()
         }
 
-        return root
+        binding.editProfile.setOnClickListener {
+            findNavController().navigate(R.id.action_navigation_profile_to_editProfileFragment)
+        }
     }
 
     override fun onDestroyView() {

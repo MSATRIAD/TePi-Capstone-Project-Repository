@@ -76,36 +76,54 @@
 
 
         <!-- About Us Button -->
+
+        <!-- Sign Out Button -->
         <Button
             android:id="@+id/aboutUsButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:text="About Us"
+            android:layout_marginBottom="8dp"
             android:backgroundTint="@android:color/holo_blue_dark"
+            android:text="About Us"
             android:textColor="@android:color/white"
-            app:layout_constraintTop_toBottomOf="@id/darkModeLayout"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="8dp" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/darkModeLayout"
+            app:layout_constraintVertical_bias="0.24" />
 
-        <!-- Sign Out Button -->
         <Button
             android:id="@+id/signOutButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:text="Sign Out"
             android:backgroundTint="@android:color/holo_blue_dark"
+            android:text="Sign Out"
             android:textColor="@android:color/white"
-            app:layout_constraintTop_toBottomOf="@id/aboutUsButton"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/editProfile"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/aboutUsButton" />
+
+        <Button
+            android:id="@+id/editProfile"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@android:color/holo_blue_dark"
+            android:text="Edit Profile"
+            android:textColor="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="16dp" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/signOutButton" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
