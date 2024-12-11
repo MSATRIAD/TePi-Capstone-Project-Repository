@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">Teguk Pintar</string>
+    <string name="title_catalog">Catalog</string>
+    <string name="title_scan">Scan</string>
+    <string name="title_save">Save</string>
+    <string name="title_profile">Profile</string>
+    <string name="app_logo">App Logo</string>
+    <string name="forgot_password">Forgot Password ?</string>
+    <string name="sign_in">Sign In</string>
+    <string name="dont_have_an_account">Don\'t have an account ?</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="login_to_your_account">Login to your account</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="create_your_account">Create your account</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="username">Username</string>
+    <string name="send">Send</string>
+    <string name="otp_code">Kode OTP</string>
+    <string name="confirm">Confirm</string>
+    <string name="reset_your_password">Reset your password</string>
+    <string name="re_enter_password">Re-enter Password</string>
+
+    <string name="error_email_required">Email is required</string>
+    <string name="error_invalid_email">Invalid email format</string>
+    <string name="error_password_required">Password is required</string>
+    <string name="error_password_too_short">Password must be at least 6 characters</string>
+    <string name="error_passwords_not_matching">Passwords do not match</string>
+    <string name="password_reset_success">Password reset successfully!</string>
+    <string name="password_reset_failed">Password reset failed!</string>
+
+    <string name="energy_kcal">%f kcal</string>
+    <string name="fiber">%f g</string>
+    <string name="fruits_vegetables">%f g</string>
+    <string name="nutriscore_grade">Nutriscore: %s</string>
+    <string name="proteins">%f g</string>
+    <string name="salt">%f mg</string>
+    <string name="saturated_fat">%f g</string>
+    <string name="sugars">%f g</string>
+
+    <string name="detail_product">Detail Product</string>
+    <string name="nutrigrade_label">Nutrigrade:</string>
+    <string name="result_product">Result Product\n</string>
+
+</resources>
