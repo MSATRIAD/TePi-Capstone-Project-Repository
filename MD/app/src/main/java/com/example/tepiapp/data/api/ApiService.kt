@@ -41,8 +41,8 @@ interface ApiService {
     @GET("allSaveProduct")
     suspend fun getAllSaveProduct(): List<ListProductItem>
 
-    @GET("saveProduct/{id}")
-    suspend fun getDetailSaveProduct(@Path("id") id: String): ListDetailItem
+    @GET("savedProduct/{id}")
+    suspend fun getDetailSaveProduct(@Path("id") productId: String): ListDetailItem
 
     @GET("profile")
     suspend fun getProfile(): ProfileResponse

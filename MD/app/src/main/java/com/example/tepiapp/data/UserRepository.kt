@@ -75,7 +75,7 @@ class UserRepository private constructor(
         }
     }
 
-    suspend fun saveProduct(data: SaveRequest): Response<SaveResponse>{
+    suspend fun saveProduct(data: SaveRequest): Response<SaveResponse> {
         return try {
             apiService.saveProduct(data)
         } catch (e: Exception) {
@@ -83,7 +83,11 @@ class UserRepository private constructor(
         }
     }
 
-    suspend fun getAllSaveProduct(): List<ListProductItem>{
+    suspend fun deleteSavedProduct(productId: String): Response<DeleteResponse> {
+        return apiService.deleteSavedProduct(productId)
+    }
+
+    suspend fun getAllSaveProduct(): List<ListProductItem> {
         return try {
             apiService.getAllSaveProduct()
         } catch (e: Exception) {
@@ -91,9 +95,9 @@ class UserRepository private constructor(
         }
     }
 
-    suspend fun getDetailSaveProduct(id: String): ListDetailItem {
+    suspend fun getDetailSaveProduct(productId: String): ListDetailItem {
         return try {
-            apiService.getDetailSaveProduct(id)
+            apiService.getDetailSaveProduct(productId)
         } catch (e: Exception) {
             throw Exception("Failed to fetch product details: ${e.message}", e)
         }
@@ -179,15 +183,7 @@ class UserRepository private constructor(
     }
 
     companion object {
-        fun getInstance(userPreferences: UserPreference, apiService: ApiService) = UserRepository(userPreferences, apiService)
-//        @Volatile
-//        private var instance: UserRepository? = null
-//        fun getInstance(
-//            userPreference: UserPreference,
-//            apiService: ApiService
-//        ): UserRepository =
-//            instance ?: synchronized(this) {
-//                instance ?: UserRepository(userPreference, apiService)
-//            }.also { instance = it }
+        fun getInstance(userPreferences: UserPreference, apiService: ApiService) =
+            UserRepository(userPreferences, apiService)
     }
 }
