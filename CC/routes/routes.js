@@ -19,7 +19,7 @@ router.get('/products', authUser, getProducts);
 router.get('/products/:id', authUser, getProductById);
 router.post('/nutriscore', authUser, predictNutriscore);
 router.post('/products/save', authUser, saveProduct);
-router.get('saved-products', authUser, allSavedProducts);
+router.get('/saved-products', authUser, allSavedProducts);
 router.get('/profile', authUser, profile);
 router.put('/profile', authUser, upload.single('imageFile'), editProfile);
 router.get('saved-products/:id', authUser, getSavedProductById);

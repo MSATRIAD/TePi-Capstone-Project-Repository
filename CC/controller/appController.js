@@ -57,7 +57,7 @@ const getProductById = async (req, res) => {
 const predictNutriscore = async (req, res) => {
   const { energy_kcal, sugars, saturated_fat, salt, fruits_veg_nuts, fiber, proteins } = req.body;
   try {
-    const response = await axios.post('https://model-backend-186840913924.asia-southeast2.run.app/predict/', {
+    const response = await axios.post('https://model-backend-186840913924.asia-southeast2.run.app/predict', {
       energy_kcal,
       sugars,
       saturated_fat,
@@ -69,6 +69,7 @@ const predictNutriscore = async (req, res) => {
 
     res.json({ predicted_grade: response.data.predicted_grade });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Failed to get prediction from backend' });
   }
 };
