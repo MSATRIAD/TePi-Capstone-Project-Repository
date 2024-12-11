@@ -1,1 +1,5 @@
 node_modules
+firebase-key.json
+package-lock.json
+firebase-adminsdk.json
+controller/storage-key.json
