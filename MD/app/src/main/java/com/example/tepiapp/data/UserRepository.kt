@@ -85,7 +85,11 @@ class UserRepository private constructor(
     }
 
     suspend fun deleteSavedProduct(productId: String): Response<DeleteResponse> {
-        return apiService.deleteSavedProduct(productId)
+        return try {
+            apiService.deleteSavedProduct(productId)
+        } catch (e: Exception) {
+            throw Exception("Failed to fetch delete product: ${e.message}", e)
+        }
     }
 
     suspend fun getAllSaveProduct(): List<ListProductItem> {

@@ -78,7 +78,6 @@ class EditProfileFragment : Fragment() {
             }
         }
 
-        // Mengambil data profil pengguna (contoh menggunakan ViewModel)
         profileViewModel.profile.observe(viewLifecycleOwner) { profile ->
             binding.displayNameEditText.setText(profile.displayName)
             Glide.with(this)

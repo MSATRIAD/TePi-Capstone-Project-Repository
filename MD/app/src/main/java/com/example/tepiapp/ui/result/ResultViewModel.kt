@@ -21,6 +21,9 @@ class ResultViewModel : ViewModel() {
     private val _saveStatus = MutableLiveData<String>()
     val saveStatus: LiveData<String> get() = _saveStatus
 
+    private val _deleteSaveStatus = MutableLiveData<String>()
+    val deleteSaveStatus: LiveData<String> get() = _deleteSaveStatus
+
     // Set UserRepository
     fun setUserRepository(userRepository: UserRepository) {
         this.userRepository = userRepository
@@ -77,12 +80,12 @@ class ResultViewModel : ViewModel() {
             try {
                 val response = userRepository.deleteSavedProduct(productId)
                 if (response.isSuccessful) {
-                    _saveStatus.postValue("Product deleted successfully")
+                    _deleteSaveStatus.postValue("Product deleted successfully")
                 } else {
-                    _saveStatus.postValue("Failed to delete product: ${response.message()}")
+                    _deleteSaveStatus.postValue("Failed to delete product: ${response.message()}")
                 }
             } catch (e: Exception) {
-                _saveStatus.postValue("Error: ${e.message}")
+                _deleteSaveStatus.postValue("Error: ${e.message}")
             }
         }
     }

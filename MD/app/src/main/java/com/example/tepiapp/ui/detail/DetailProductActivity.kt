@@ -1,5 +1,6 @@
 package com.example.tepiapp.ui.detail
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -10,6 +11,7 @@ import com.example.tepiapp.data.UserRepository
 import com.example.tepiapp.databinding.ActivityDetailBinding
 import com.example.tepiapp.di.Injection
 import com.example.tepiapp.data.response.ListDetailItem
+import com.example.tepiapp.ui.chatbot.ChatbotActivity
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -61,6 +63,27 @@ class DetailProductActivity : AppCompatActivity() {
 
         binding.topAppBar.setNavigationOnClickListener {
             finish()
+        }
+
+        binding.fabChatbot.setOnClickListener {
+            val productDetails = viewModel.productDetail.value
+            if (productDetails != null) {
+                val intent = Intent(this, ChatbotActivity::class.java).apply {
+                    putExtra("product_name", productDetails.productName)
+                    putExtra("energy_kcal", productDetails.energyKcal100g)
+                    putExtra("sugars", productDetails.sugars100g)
+                    putExtra("saturatedFat", productDetails.saturatedFat100g)
+                    putExtra("salt", productDetails.salt100g)
+                    putExtra("fruits_veg_nuts", productDetails.fruitsVegetablesNutsEstimateFromIngredients100g)
+                    putExtra("fiber", productDetails.fiber100g)
+                    putExtra("proteins", productDetails.proteins100g)
+                    putExtra("nutriscore_grade", productDetails.nutriscoreGrade)
+                    putExtra("id", productId)
+                }
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "Data produk tidak tersedia", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

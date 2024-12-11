@@ -11,7 +11,7 @@ class Adapter(private var productList: List<ListProductItem>, private val onItem
 
     inner class ProductViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val productName: TextView = view.findViewById(R.id.tvProductName)
-        val nutrigradeLabel: TextView = view.findViewById(R.id.tvNutrigradeLabel)
+//        val nutrigradeLabel: TextView = view.findViewById(R.id.tvNutrigradeLabel)
         val productGrade: TextView = view.findViewById(R.id.tvProductGrade)
     }
 
@@ -25,11 +25,11 @@ class Adapter(private var productList: List<ListProductItem>, private val onItem
         val product = productList[position]
 
         // Set the product name and nutrigrade label
-        holder.productName.text = product.name
-        holder.nutrigradeLabel.text = holder.itemView.context.getString(R.string.nutrigrade_label)
+        holder.productName.text = product.name.uppercase()
+//        holder.nutrigradeLabel.text = holder.itemView.context.getString(R.string.nutrigrade_label)
 
         // Safely handle null grades
-        holder.productGrade.text = product.grade
+        holder.productGrade.text = "Nutriscore: ${product.grade}"
 
         // Set the click listener
         holder.itemView.setOnClickListener {

@@ -35,6 +35,10 @@
             android:name=".ui.about.AboutActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.chatbot.ChatbotActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+        <activity
             android:name=".ui.result.ResultActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />

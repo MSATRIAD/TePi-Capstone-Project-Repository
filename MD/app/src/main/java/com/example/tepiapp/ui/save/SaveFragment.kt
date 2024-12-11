@@ -1,11 +1,14 @@
 package com.example.tepiapp.ui.save
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -36,7 +39,13 @@ class SaveFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupRecyclerView()
+        val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                saveViewModel.fetchProducts()
+            }
+        }
+
+        setupRecyclerView(resultLauncher)
 
         setupViewModel()
 
@@ -72,16 +81,16 @@ class SaveFragment : Fragment() {
         }
     }
 
-    private fun setupRecyclerView() {
+    private fun setupRecyclerView(resultLauncher: ActivityResultLauncher<Intent>) {
         productAdapter = SaveProductsAdapter(listOf()) { product ->
-            fetchProductDetail(product.id)
+            fetchProductDetail(product.id, resultLauncher)
         }
 
         binding.rvProduct.layoutManager = GridLayoutManager(context, 2)
         binding.rvProduct.adapter = productAdapter
     }
 
-    private fun fetchProductDetail(productId: String) {
+    private fun fetchProductDetail(productId: String, resultLauncher: ActivityResultLauncher<Intent>) {
         lifecycleScope.launch {
             try {
                 // Call the fetchProductDetail function from the ViewModel
@@ -89,7 +98,7 @@ class SaveFragment : Fragment() {
 
                 // Observe the product details once the fetch is complete
                 saveViewModel.productDetail.observe(viewLifecycleOwner) { productDetail ->
-                    navigateToDetail(productDetail)  // Use the fetched product details
+                    navigateToDetail(productDetail, resultLauncher)  // Use the fetched product details
                 }
 
             } catch (e: Exception) {
@@ -98,7 +107,7 @@ class SaveFragment : Fragment() {
         }
     }
 
-    private fun navigateToDetail(detail: ListDetailItem) {
+    private fun navigateToDetail(detail: ListDetailItem, resultLauncher: ActivityResultLauncher<Intent>) {
         val intent = Intent(requireContext(), ResultActivity::class.java).apply {
             putExtra("productName", detail.productName)
             putExtra("energyKcal", detail.energyKcal100g)
@@ -108,11 +117,13 @@ class SaveFragment : Fragment() {
             putExtra("fruitsVegNuts", detail.fruitsVegetablesNutsEstimateFromIngredients100g)
             putExtra("fiber", detail.fiber100g)
             putExtra("proteins", detail.proteins100g)
+            putExtra("isBookmarked", true)
 
             // Flags to manage back stack behavior
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+//            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
-        startActivity(intent)
+//        startActivity(intent)
+        resultLauncher.launch(intent)
     }
     
     private fun setupSearchView() {

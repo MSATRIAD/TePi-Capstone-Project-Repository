@@ -1,5 +1,6 @@
 package com.example.tepiapp.ui.result
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -14,6 +15,7 @@ import com.example.tepiapp.data.pref.dataStore
 import com.example.tepiapp.data.response.ListDetailItem
 import com.example.tepiapp.data.response.SaveRequest
 import com.example.tepiapp.databinding.ActivityResultBinding
+import com.example.tepiapp.ui.chatbot.ChatbotActivity
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -91,6 +93,20 @@ class ResultActivity : AppCompatActivity() {
             }
             Toast.makeText(this, status, Toast.LENGTH_SHORT).show()
         }
+
+        binding.fabChatbot.setOnClickListener {
+            val intent = Intent(this, ChatbotActivity::class.java).apply {
+                putExtra("productName", productName)
+                putExtra("energyKcal", energyKcal)
+                putExtra("sugars", sugars)
+                putExtra("saturatedFat", saturatedFat)
+                putExtra("salt", salt)
+                putExtra("fruitsVegNuts", fruitsVegNuts)
+                putExtra("fiber", fiber)
+                putExtra("proteins", proteins)
+            }
+            startActivity(intent)
+        }
     }
 
     private fun saveProduct(
@@ -131,16 +147,15 @@ class ResultActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launch {
-            try {
-                viewModel.deleteSavedProduct(productId)
-
-                isBookmarked = false
-                updateBookmarkIcon()
-
-                Toast.makeText(this@ResultActivity, "Product deleted successfully", Toast.LENGTH_SHORT).show()
-
-            } catch (e: Exception) {
-                Toast.makeText(this@ResultActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            viewModel.deleteSavedProduct(productId)
+            viewModel.deleteSaveStatus.observe(this@ResultActivity) { status ->
+                if (status == "Product deleted successfully") {
+                    isBookmarked = intent.getBooleanExtra("isBookmarked", true)
+                    updateBookmarkIcon()
+                    Toast.makeText(this@ResultActivity, status, Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this@ResultActivity, "Failed to delete product: $status", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
