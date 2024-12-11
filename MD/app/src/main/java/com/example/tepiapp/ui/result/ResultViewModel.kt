@@ -62,12 +62,27 @@ class ResultViewModel : ViewModel() {
             try {
                 val response = userRepository.saveProduct(data)
                 if (response.isSuccessful) {
-                    _saveStatus.value = response.body()?.message ?: "Save successful"
+                    _saveStatus.value = response.body()?.message
                 } else {
                     _saveStatus.value = "Failed to save product"
                 }
             } catch (e: Exception) {
                 _saveStatus.value = "Error: ${e.message}"
+            }
+        }
+    }
+
+    fun deleteSavedProduct(productId: String) {
+        viewModelScope.launch {
+            try {
+                val response = userRepository.deleteSavedProduct(productId)
+                if (response.isSuccessful) {
+                    _saveStatus.postValue("Product deleted successfully")
+                } else {
+                    _saveStatus.postValue("Failed to delete product: ${response.message()}")
+                }
+            } catch (e: Exception) {
+                _saveStatus.postValue("Error: ${e.message}")
             }
         }
     }

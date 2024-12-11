@@ -1,5 +1,7 @@
 package com.example.tepiapp.data.api
 
+import com.example.tepiapp.data.response.DeleteRequest
+import com.example.tepiapp.data.response.DeleteResponse
 import com.example.tepiapp.data.response.ListDetailItem
 import com.example.tepiapp.data.response.ListProductItem
 import com.example.tepiapp.data.response.LoginRequest
@@ -36,6 +38,9 @@ interface ApiService {
     @GET("allSaveProduct")
     suspend fun getAllSaveProduct(): List<ListProductItem>
 
-    @GET("saveProduct/{id}")
-    suspend fun getDetailSaveProduct(@Path("id") id: String): ListDetailItem
+    @GET("savedProduct/{id}")
+    suspend fun getDetailSaveProduct(@Path("id") productId: String): ListDetailItem
+
+    @DELETE("savedProduct/{id}")
+    suspend fun deleteSavedProduct(@Path("id") productId: String): Response<DeleteResponse>
 }

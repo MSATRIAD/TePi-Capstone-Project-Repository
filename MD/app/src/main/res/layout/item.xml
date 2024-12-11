@@ -41,7 +41,6 @@
             android:gravity="center"
             android:paddingHorizontal="15dp"
             android:paddingVertical="5dp"
-            android:text="@string/nutriscore_grade"
             android:textSize="12sp"
             app:layout_constraintEnd_toStartOf="@+id/tvProductGrade"
             app:layout_constraintHorizontal_chainStyle="packed"

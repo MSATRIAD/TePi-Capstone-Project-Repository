@@ -5,14 +5,14 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatEditText
+import com.google.android.material.textfield.TextInputLayout
 
 class MyEditText @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : AppCompatEditText(context, attrs) {
 
-    var validationType: ValidationType = ValidationType.NONE
-
     init {
+        // Add a text changed listener to validate input on the fly
         addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
                 // Do nothing.
@@ -29,31 +29,36 @@ class MyEditText @JvmOverloads constructor(
     }
 
     private fun validateInput(input: String) {
-        when (validationType) {
-            ValidationType.PASSWORD -> {
-                if (input.length < 8) {
-                    error = "Password tidak boleh kurang dari 8 karakter"
-                } else {
-                    error = null
-                }
-            }
-            ValidationType.EMAIL -> {
+        // Validate based on input type (email or password)
+        when {
+            inputType == android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS -> {
                 if (!android.util.Patterns.EMAIL_ADDRESS.matcher(input).matches()) {
-                    error = "Format email tidak valid"
+                    (parent as? TextInputLayout)?.apply {
+                        error = "Format email tidak valid"
+                    }
                 } else {
-                    error = null
+                    (parent as? TextInputLayout)?.apply {
+                        error = null
+                    }
                 }
             }
-            ValidationType.RE_ENTER_PASSWORD -> {
-                // Validasi dilakukan pada Activity atau Fragment, karena butuh referensi password sebelumnya
+            inputType == android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD -> {
+                if (input.length < 8) {
+                    (parent as? TextInputLayout)?.apply {
+                        error = "Password tidak boleh kurang dari 8 karakter"
+                    }
+                } else {
+                    (parent as? TextInputLayout)?.apply {
+                        error = null
+                    }
+                }
             }
-            ValidationType.NONE -> {
-                // Tidak ada validasi
+            else -> {
+                // No validation
+                (parent as? TextInputLayout)?.apply {
+                    error = null
+                }
             }
         }
-    }
-
-    enum class ValidationType {
-        PASSWORD, EMAIL, RE_ENTER_PASSWORD, NONE
     }
 }

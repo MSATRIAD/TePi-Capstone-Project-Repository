@@ -15,7 +15,7 @@ class SaveProductsAdapter(
 
     inner class ProductViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val productName: TextView = view.findViewById(R.id.tvProductName)
-        val nutrigradeLabel: TextView = view.findViewById(R.id.tvNutrigradeLabel)
+//        val nutrigradeLabel: TextView = view.findViewById(R.id.tvNutrigradeLabel)
         val productGrade: TextView = view.findViewById(R.id.tvProductGrade)
     }
 
@@ -30,7 +30,7 @@ class SaveProductsAdapter(
 
         // Set the product name and nutrigrade label
         holder.productName.text = product.name
-        holder.nutrigradeLabel.text = holder.itemView.context.getString(R.string.nutrigrade_label)
+//        holder.nutrigradeLabel.text = holder.itemView.context.getString(R.string.nutrigrade_label)
 
         // Safely handle null grades
         holder.productGrade.text = product.grade

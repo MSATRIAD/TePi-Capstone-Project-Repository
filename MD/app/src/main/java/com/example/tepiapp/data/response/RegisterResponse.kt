@@ -7,7 +7,7 @@ data class RegisterResponse(
     val error: Boolean,
 
     @SerializedName("message")
-    val  message: String,
+    val message: String,
 
     @SerializedName("uid")
     val uid: String
@@ -18,7 +18,7 @@ data class RegisterRequest(
     val name: String,
 
     @SerializedName("email")
-    val  email: String,
+    val email: String,
 
     @SerializedName("password")
     val password: String
