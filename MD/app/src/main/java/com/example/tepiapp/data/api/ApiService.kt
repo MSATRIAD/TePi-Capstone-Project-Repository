@@ -1,5 +1,7 @@
 package com.example.tepiapp.data.api
 
+import com.example.tepiapp.data.response.DeleteRequest
+import com.example.tepiapp.data.response.DeleteResponse
 import android.credentials.CredentialDescription
 import com.example.tepiapp.data.response.EditProfileResponse
 import com.example.tepiapp.data.response.ListDetailItem
@@ -41,9 +43,6 @@ interface ApiService {
     @GET("allSaveProduct")
     suspend fun getAllSaveProduct(): List<ListProductItem>
 
-    @GET("savedProduct/{id}")
-    suspend fun getDetailSaveProduct(@Path("id") productId: String): ListDetailItem
-
     @GET("profile")
     suspend fun getProfile(): ProfileResponse
 
@@ -53,4 +52,10 @@ interface ApiService {
         @Part imageFile: MultipartBody.Part? = null,
         @Part("displayName") displayName: RequestBody
     ): EditProfileResponse
+
+    @GET("savedProduct/{id}")
+    suspend fun getDetailSaveProduct(@Path("id") productId: String): ListDetailItem
+
+    @DELETE("savedProduct/{id}")
+    suspend fun deleteSavedProduct(@Path("id") productId: String): Response<DeleteResponse>
 }

@@ -1,9 +1,12 @@
+package com.example.tepiapp.ui.chatbot
+
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tepiapp.R
+import com.example.tepiapp.data.adapter.SuggestionAdapter
 
 class ChatbotActivity : AppCompatActivity() {
 

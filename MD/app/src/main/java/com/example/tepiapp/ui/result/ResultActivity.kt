@@ -1,6 +1,7 @@
 package com.example.tepiapp.ui.result
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -20,13 +21,13 @@ class ResultActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityResultBinding
     private val viewModel: ResultViewModel by viewModels()
+    private var isBookmarked: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityResultBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Ambil data yang dikirim dari ScanFragment
         val productName = intent.getStringExtra("productName") ?: "Unknown Product"
         val energyKcal = intent.getFloatExtra("energyKcal", 0f)
         val sugars = intent.getFloatExtra("sugars", 0f)
@@ -36,7 +37,6 @@ class ResultActivity : AppCompatActivity() {
         val fiber = intent.getFloatExtra("fiber", 0f)
         val proteins = intent.getFloatExtra("proteins", 0f)
 
-        // Menampilkan nama produk di UI
         binding.tvProductName.text = productName
         binding.tvEnergyKcal.text = "$energyKcal kcal"
         binding.tvSugars.text = "$sugars g"
@@ -46,7 +46,6 @@ class ResultActivity : AppCompatActivity() {
         binding.tvFiber.text = "$fiber g"
         binding.tvProteins.text = "$proteins g"
 
-        // Memproses data menggunakan ResultViewModel
         lifecycleScope.launch {
             val userPreference = UserPreference.getInstance(this@ResultActivity.dataStore)
             val token = userPreference.getSession().first().token
@@ -55,14 +54,15 @@ class ResultActivity : AppCompatActivity() {
             val userRepository = UserRepository.getInstance(userPreference, apiService)
             viewModel.setUserRepository(userRepository)
 
-            // Memanggil fungsi prediksi Nutriscore dari ViewModel
+            showProgressBar(true)
+
             viewModel.predictNutriscore(
                 energyKcal, sugars, saturatedFat, salt, fruitsVegNuts, fiber, proteins
             )
         }
 
-        // Observasi hasil grade Nutriscore
         viewModel.nutriscoreGrade.observe(this) { grade ->
+            showProgressBar(false)
             binding.tvNutriscoreGrade.text = getString(R.string.nutriscore_grade, grade.uppercase())
         }
 
@@ -70,27 +70,95 @@ class ResultActivity : AppCompatActivity() {
             finish()
         }
 
-        binding.fabSaveProduct.setOnClickListener {
-            // Buat objek SaveRequest
-            val productData = ListDetailItem(
-                productName = productName,
-                energyKcal100g = energyKcal,
-                sugars100g = sugars,
-                saturatedFat100g = saturatedFat,
-                salt100g = salt,
-                fruitsVegetablesNutsEstimateFromIngredients100g = fruitsVegNuts,
-                fiber100g = fiber,
-                proteins100g = proteins,
-                nutriscoreGrade = binding.tvNutriscoreGrade.text.toString()
-            )
-            val saveRequest = SaveRequest(productData)
+        updateBookmarkIcon()
 
-            // Panggil ViewModel untuk menyimpan data
-            viewModel.saveProduct(saveRequest)
+        binding.fabSaveProduct.setOnClickListener {
+            if (isBookmarked) {
+                deleteSavedProduct()
+            } else {
+                saveProduct(
+                    productName, energyKcal, sugars, saturatedFat, salt,
+                    fruitsVegNuts, fiber, proteins, binding.tvNutriscoreGrade.text.toString()
+                )
+                isBookmarked = true
+                updateBookmarkIcon()
+            }
         }
 
         viewModel.saveStatus.observe(this) { status ->
+            if (status == "Success") {
+                toggleBookmarkState()
+            }
             Toast.makeText(this, status, Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun saveProduct(
+        productName: String, energyKcal: Float, sugars: Float,
+        saturatedFat: Float, salt: Float, fruitsVegNuts: Float, fiber: Float,
+        proteins: Float, nutriscoreGrade: String
+    ) {
+        val productData = ListDetailItem(
+            productName = productName,
+            energyKcal100g = energyKcal,
+            sugars100g = sugars,
+            saturatedFat100g = saturatedFat,
+            salt100g = salt,
+            fruitsVegetablesNutsEstimateFromIngredients100g = fruitsVegNuts,
+            fiber100g = fiber,
+            proteins100g = proteins,
+            nutriscoreGrade = nutriscoreGrade
+        )
+        val saveRequest = SaveRequest(productData)
+
+        viewModel.saveProduct(saveRequest)
+
+        viewModel.saveStatus.observe(this) { status ->
+            if (status == "Success") {
+                isBookmarked = true
+                updateBookmarkIcon()
+                Toast.makeText(this, "Product saved successfully", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Failed to save product: $status", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun deleteSavedProduct() {
+        val productId = intent.getStringExtra("productId") ?: run {
+            Toast.makeText(this, "Product ID is missing", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        lifecycleScope.launch {
+            try {
+                viewModel.deleteSavedProduct(productId)
+
+                isBookmarked = false
+                updateBookmarkIcon()
+
+                Toast.makeText(this@ResultActivity, "Product deleted successfully", Toast.LENGTH_SHORT).show()
+
+            } catch (e: Exception) {
+                Toast.makeText(this@ResultActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun toggleBookmarkState() {
+        isBookmarked = !isBookmarked
+        updateBookmarkIcon()
+    }
+
+    private fun updateBookmarkIcon() {
+        if (isBookmarked) {
+            binding.fabSaveProduct.setImageResource(R.drawable.baseline_bookmark_24)
+        } else {
+            binding.fabSaveProduct.setImageResource(R.drawable.baseline_bookmark_border_24)
+        }
+    }
+
+    private fun showProgressBar(show: Boolean) {
+        binding.progressBar.visibility = if (show) View.VISIBLE else View.GONE
     }
 }

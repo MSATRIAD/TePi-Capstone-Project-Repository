@@ -18,6 +18,9 @@ class SaveViewModel(private val userRepository: UserRepository) : ViewModel() {
     private val _productList = MutableLiveData<List<ListProductItem>>()
     val productList: LiveData<List<ListProductItem>> = _productList
 
+    private val _productDetail = MutableLiveData<ListDetailItem>()
+    val productDetail: LiveData<ListDetailItem> = _productDetail  // LiveData for product details
+
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
@@ -27,6 +30,7 @@ class SaveViewModel(private val userRepository: UserRepository) : ViewModel() {
     private val _userSession = MutableLiveData<UserModel>()
     val userSession: LiveData<UserModel> = _userSession
 
+    // Fetch all products
     fun fetchProducts() {
         viewModelScope.launch {
             _isLoading.postValue(true)
@@ -46,6 +50,27 @@ class SaveViewModel(private val userRepository: UserRepository) : ViewModel() {
         }
     }
 
+    // Fetch product details by productId
+    fun fetchProductDetail(productId: String) {
+        viewModelScope.launch {
+            _isLoading.postValue(true)
+            try {
+                val productDetailResponse = userRepository.getDetailSaveProduct(productId)
+                _productDetail.postValue(productDetailResponse)
+            } catch (e: Exception) {
+                val errorMessage = when (e) {
+                    is SocketTimeoutException -> "Request timed out. Please try again."
+                    is IOException -> "Failed to connect. Please check your internet connection."
+                    else -> "An unexpected error occurred: ${e.localizedMessage}"
+                }
+                _errorMessage.postValue(errorMessage)
+            } finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
+
+    // Fetch user session
     fun getSession() {
         viewModelScope.launch {
             try {

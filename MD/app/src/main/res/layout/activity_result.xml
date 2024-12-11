@@ -221,7 +221,7 @@
         android:id="@+id/fabSaveProduct"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/baseline_bookmark_24"
+        android:src="@drawable/baseline_bookmark_border_24"
         android:contentDescription="@string/save_product"
         android:layout_marginBottom="16dp"
         android:layout_marginStart="16dp"
