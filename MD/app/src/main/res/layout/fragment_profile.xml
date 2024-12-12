@@ -18,45 +18,46 @@
         <!-- Profile Image -->
         <ImageView
             android:id="@+id/profileImage"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="16dp"
-            android:src="@drawable/ic_profile_black_24dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="32dp"
+            android:src="@drawable/baseline_account_circle_24"
+            android:contentDescription="Profile Image"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toStartOf="@+id/username" />
 
         <!-- Username -->
         <TextView
             android:id="@+id/username"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:text="Username"
-            android:textSize="18sp"
-            app:layout_constraintTop_toBottomOf="@id/profileImage"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginBottom="8dp" />
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="@id/profileImage"
+            app:layout_constraintStart_toEndOf="@id/profileImage"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <!-- Email -->
         <TextView
             android:id="@+id/email"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:text="username@gmail.com"
-            android:textSize="14sp"
+            android:textSize="18sp"
             app:layout_constraintTop_toBottomOf="@id/username"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginBottom="32dp" />
+            app:layout_constraintStart_toStartOf="@id/username"
+            app:layout_constraintEnd_toEndOf="@id/username" />
 
         <!-- Dark Mode Toggle -->
         <LinearLayout
             android:id="@+id/darkModeLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="56dp"
+            android:layout_marginTop="100dp"
             android:orientation="horizontal"
             android:gravity="center_vertical"
             app:layout_constraintTop_toBottomOf="@id/email"
@@ -68,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Dark Mode"
-                android:textSize="16sp" />
+                android:textSize="18sp" />
 
             <Switch
                 android:id="@+id/switchDarkMode"

@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.tepiapp.data.adapter.SaveProductsAdapter
+import com.example.tepiapp.data.response.ListDetailItem
 import com.example.tepiapp.data.response.ListProductItem
 import com.example.tepiapp.databinding.FragmentSaveBinding
 import com.example.tepiapp.di.Injection
