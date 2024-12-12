@@ -28,7 +28,6 @@ class SignupActivity : AppCompatActivity() {
     private lateinit var edSignUpPassword: PasswordCustomView
     private lateinit var edConfirmPassword: MyEditText
     private lateinit var signUpButton: Button
-    private lateinit var signInText: TextView
     private lateinit var progressBar: ProgressBar
 
     private val signupViewModel: SignupViewModel by viewModels {
@@ -51,40 +50,33 @@ class SignupActivity : AppCompatActivity() {
         edSignUpPassword = findViewById(R.id.ed_sign_up_password)
         edConfirmPassword = findViewById(R.id.ed_confirm_password)
         signUpButton = findViewById(R.id.signUpButton)
-        signInText = findViewById(R.id.signIn)
         progressBar = findViewById(R.id.progressBar)
 
-        // Observe status and success
-        signupViewModel.signupStatus.observe(this) { status ->
-            progressBar.visibility = View.GONE
-            val isSuccess = signupViewModel.isSignupSuccess.value == true
-            if (isSuccess) {
-                // Jika signup berhasil
-                showAlertDialog(
-                    title = "Pendaftaran Berhasil",
-                    message = status
-                ) {
-                    // Setelah menekan OK pada dialog, kembali ke LoginActivity
-                    navigateToLoginActivity()
-                }
-            } else {
-                // Jika signup gagal
-                showAlertDialog(
-                    title = "Pendaftaran Gagal",
-                    message = status
-                )
-            }
+        // Initialize Sign In TextView
+        val signInTextView: TextView = findViewById(R.id.signIn)
+        signInTextView.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
         }
 
         // Handle sign-up button click
         signUpButton.setOnClickListener {
             progressBar.visibility = View.VISIBLE
+
             val email = edSignUpEmail.text.toString().trim()
             val username = edSignUpUsername.text.toString().trim()
             val password = edSignUpPassword.text.toString().trim()
             val confirmPassword = edConfirmPassword.text.toString().trim()
 
-            if (password != confirmPassword) {
+            // Input validation
+            if (email.isEmpty() || username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+                progressBar.visibility = View.GONE
+                showAlertDialog(
+                    title = "Kesalahan",
+                    message = "Semua kolom harus diisi."
+                )
+            } else if (password != confirmPassword) {
                 progressBar.visibility = View.GONE
                 showAlertDialog(
                     title = "Kesalahan",
@@ -99,16 +91,30 @@ class SignupActivity : AppCompatActivity() {
             }
         }
 
-        // Handle "sign in" text click
-        signInText.setOnClickListener {
-            navigateToLoginActivity()
+        // Observe status and success
+        signupViewModel.signupStatus.observe(this) { status ->
+            progressBar.visibility = View.GONE
+            val isSuccess = signupViewModel.isSignupSuccess.value == true
+            if (isSuccess) {
+                // Show success alert
+                showAlertDialog(
+                    title = "Pendaftaran Berhasil",
+                    message = status,
+                    onPositiveAction = {
+                        // Navigate to LoginActivity after successful sign-up
+                        val intent = Intent(this, LoginActivity::class.java)
+                        startActivity(intent)
+                        finish() // Close the SignupActivity to prevent going back to it
+                    }
+                )
+            } else {
+                // Show error alert
+                showAlertDialog(
+                    title = "Pendaftaran Gagal",
+                    message = status
+                )
+            }
         }
-    }
-
-    private fun navigateToLoginActivity() {
-        val intent = Intent(this, LoginActivity::class.java)
-        startActivity(intent)
-        finish() // Pastikan tidak bisa kembali ke SignupActivity
     }
 
     private fun showAlertDialog(title: String, message: String, onPositiveAction: (() -> Unit)? = null) {
@@ -117,7 +123,7 @@ class SignupActivity : AppCompatActivity() {
             setMessage(message)
             setPositiveButton("OK") { dialog, _ ->
                 dialog.dismiss()
-                onPositiveAction?.invoke()
+                onPositiveAction?.invoke() // Invoke the action if provided
             }
             create()
             show()

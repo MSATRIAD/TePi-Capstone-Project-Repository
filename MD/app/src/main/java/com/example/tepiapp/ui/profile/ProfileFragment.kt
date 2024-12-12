@@ -104,7 +104,8 @@ class ProfileFragment : Fragment() {
         }
 
         binding.editProfile.setOnClickListener {
-            findNavController().navigate(R.id.action_navigation_profile_to_editProfileFragment)
+            val intent = Intent(requireContext(), EditProfileActivity::class.java)
+            startActivity(intent)
         }
     }
 

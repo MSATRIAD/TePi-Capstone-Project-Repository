@@ -18,6 +18,7 @@ import com.example.tepiapp.R
 import com.example.tepiapp.data.api.ApiConfig
 import com.example.tepiapp.data.pref.UserPreference
 import com.example.tepiapp.data.pref.dataStore
+import com.example.tepiapp.ui.forgot.ForgotActivity
 import com.example.tepiapp.ui.register.SignupActivity
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -29,6 +30,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var edLoginPassword: PasswordCustomView
     private lateinit var signInButton: Button
     private lateinit var signUpText: TextView
+    private lateinit var forgotPasswordText: TextView // New view for forgot password
     private lateinit var progressBar: ProgressBar
 
     private val loginViewModel: LoginViewModel by viewModels {
@@ -50,6 +52,7 @@ class LoginActivity : AppCompatActivity() {
         edLoginPassword = findViewById(R.id.password)
         signInButton = findViewById(R.id.signInButton)
         signUpText = findViewById(R.id.signUp)
+        forgotPasswordText = findViewById(R.id.forgotPasswordText) // Initialize forgot password text view
         progressBar = findViewById(R.id.progressBar)
 
         // Observe LiveData from ViewModel
@@ -80,6 +83,12 @@ class LoginActivity : AppCompatActivity() {
 
         signUpText.setOnClickListener {
             startActivity(Intent(this, SignupActivity::class.java))
+        }
+
+        // Add listener for Forgot Password link
+        forgotPasswordText.setOnClickListener {
+            val intent = Intent(this, ForgotActivity::class.java)
+            startActivity(intent)
         }
 
         lifecycleScope.launch {

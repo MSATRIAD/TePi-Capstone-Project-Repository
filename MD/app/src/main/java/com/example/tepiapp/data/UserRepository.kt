@@ -3,7 +3,6 @@ package com.example.tepiapp.data
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import com.example.tepiapp.data.api.ApiService
 import com.example.tepiapp.data.pref.UserModel
 import com.example.tepiapp.data.pref.UserPreference
@@ -17,11 +16,8 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import retrofit2.Call
 import retrofit2.Response
 import java.io.File
-import java.io.InputStream
-import java.io.OutputStream
 
 class UserRepository private constructor(
     private val userPreference: UserPreference,
@@ -50,6 +46,11 @@ class UserRepository private constructor(
             }
         }
         return response
+    }
+
+    suspend fun resetPassword(email: String): ResetPasswordResponse {
+        val request = ResetPasswordRequest(email)
+        return apiService.resetPassword(request)
     }
 
     suspend fun getProducts(): List<ListProductItem> {
@@ -112,26 +113,17 @@ class UserRepository private constructor(
         }
     }
 
-//    private fun createImagePart(file: File, fieldName: String): MultipartBody.Part {
-//        val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
-//        return MultipartBody.Part.createFormData(fieldName, file.name, requestFile)
-//    }
-//
-//    suspend fun editProfile(imageFile: File, displayName: String): EditProfileResponse {
-//        return try {
-//            val filePart = createImagePart(imageFile, "imageFile")
-//            apiService.editProfile(filePart, displayName)
-//        } catch (e: Exception) {
-//            throw Exception("Failed to fetch product details: ${e.message}", e)
-//        }
-//    }
-
     suspend fun editProfile(displayName: String, imageUri: Uri?, context: Context): EditProfileResponse {
         return withContext(Dispatchers.IO) {
             try {
+                // Convert the displayName to RequestBody
                 val displayNameRequestBody = displayName.toRequestBody("text/plain".toMediaTypeOrNull())
-                val filePart = imageUri?.let { createMultipartBody(context, it) }
-                apiService.editProfile(filePart, displayNameRequestBody)
+
+                // Create MultipartBody.Part for the image file (if available)
+                val imageFilePart = imageUri?.let { createMultipartBody(context, it) }
+
+                // Call the API with the imageFile and displayName
+                return@withContext apiService.editProfile(imageFilePart, displayNameRequestBody)
             } catch (e: Exception) {
                 throw Exception("Failed to edit profile: ${e.message}", e)
             }
@@ -142,10 +134,12 @@ class UserRepository private constructor(
         return try {
             val contentResolver: ContentResolver = context.contentResolver
             val file = File(uri.path ?: "")
+
             if (file.length() > 5 * 1024 * 1024) {
                 throw Exception("Image size should be less than 5MB")
             }
 
+            // Create a temporary file and copy the content of the image
             val tempFile = File.createTempFile("upload", ".jpg", context.cacheDir)
 
             contentResolver.openInputStream(uri).use { inputStream ->
@@ -161,15 +155,6 @@ class UserRepository private constructor(
             null
         }
     }
-
-//    private fun copyStream(input: InputStream, output: OutputStream) {
-//        val buffer = ByteArray(1024)
-//        var read: Int
-//        while (input.read(buffer).also { read = it } != -1) {
-//            output.write(buffer, 0, read)
-//        }
-//    }
-
 
     suspend fun saveSession(user: UserModel) {
         userPreference.saveSession(user)
