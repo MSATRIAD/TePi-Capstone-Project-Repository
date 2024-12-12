@@ -90,12 +90,13 @@ class PredictFragment : Fragment() {
                 val response = apiService.predict(request) // This is a suspend function call
                 if (response != null) {
                     val intent = Intent(requireContext(), ResultActivity::class.java).apply {
-                        putExtra("productName", productName) // Kirimkan nama produk
-                        putExtra("energyKcal", energyKcal)
+                        putExtra("product_name", productName) // Kirimkan nama produk
+                        putExtra("energy_kcal", energyKcal)
                         putExtra("sugars", sugars)
-                        putExtra("saturatedFat", saturatedFat)
+                        putExtra("saturated_fat", saturatedFat)
                         putExtra("salt", salt)
-                        putExtra("fruitsVegNuts", fruitsVegNuts)
+                        putExtra("fruits_veg_nuts", fruitsVegNuts)
+                        putExtra("fruits_veg_nuts", fruitsVegNuts)
                         putExtra("fiber", fiber)
                         putExtra("proteins", proteins)
                     }

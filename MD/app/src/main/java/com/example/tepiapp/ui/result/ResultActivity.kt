@@ -38,7 +38,6 @@ class ResultActivity : AppCompatActivity() {
         val fruitsVegNuts = intent.getFloatExtra("fruits_veg_nuts", 0f)
         val fiber = intent.getFloatExtra("fiber", 0f)
         val proteins = intent.getFloatExtra("proteins", 0f)
-        val nutriscoreGrade = intent.getStringExtra("nutriscore_grade") ?: "Unknown"
 
         binding.tvProductName.text = productName
         binding.tvEnergyKcal.text = "$energyKcal kcal"
@@ -48,7 +47,6 @@ class ResultActivity : AppCompatActivity() {
         binding.tvFruitsVegetables.text = "$fruitsVegNuts g"
         binding.tvFiber.text = "$fiber g"
         binding.tvProteins.text = "$proteins g"
-//        binding.tvNutriscoreGrade.text = nutriscoreGrade
 
         lifecycleScope.launch {
             val userPreference = UserPreference.getInstance(this@ResultActivity.dataStore)
@@ -67,7 +65,7 @@ class ResultActivity : AppCompatActivity() {
 
         viewModel.nutriscoreGrade.observe(this) { grade ->
             showProgressBar(false)
-            binding.tvNutriscoreGrade.text = nutriscoreGrade
+            binding.tvNutriscoreGrade.text = getString(R.string.nutriscore_grade, grade.uppercase())
         }
 
         binding.topAppBar.setNavigationOnClickListener {
@@ -106,7 +104,7 @@ class ResultActivity : AppCompatActivity() {
                 putExtra("fruits_veg_nuts", fruitsVegNuts)
                 putExtra("fiber", fiber)
                 putExtra("proteins", proteins)
-                putExtra("nutriscore_grade", nutriscoreGrade)
+                putExtra("nutriscore_grade", binding.tvNutriscoreGrade.text.toString())
             }
             startActivity(intent)
         }

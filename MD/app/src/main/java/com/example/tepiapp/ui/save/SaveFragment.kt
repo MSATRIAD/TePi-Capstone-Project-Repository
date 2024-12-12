@@ -136,7 +136,7 @@ class SaveFragment : Fragment() {
             putExtra("fruits_veg_nuts", detail.fruitsVegetablesNutsEstimateFromIngredients100g)
             putExtra("fiber", detail.fiber100g)
             putExtra("proteins", detail.proteins100g)
-            putExtra("nutriscore_grade", detail.nutriscoreGrade)
+            putExtra("predicted_grade", detail.nutriscoreGrade)
             putExtra("isBookmarked", true)
 
             // Flags to manage back stack behavior

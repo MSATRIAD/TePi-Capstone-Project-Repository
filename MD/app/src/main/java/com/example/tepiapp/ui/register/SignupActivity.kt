@@ -95,7 +95,7 @@ class SignupActivity : AppCompatActivity() {
         signupViewModel.signupStatus.observe(this) { status ->
             progressBar.visibility = View.GONE
             val isSuccess = signupViewModel.isSignupSuccess.value == true
-            if (isSuccess) {
+            if (!isSuccess) {
                 // Show success alert
                 showAlertDialog(
                     title = "Pendaftaran Berhasil",
@@ -111,7 +111,7 @@ class SignupActivity : AppCompatActivity() {
                 // Show error alert
                 showAlertDialog(
                     title = "Pendaftaran Gagal",
-                    message = status
+                    message = status,
                 )
             }
         }
