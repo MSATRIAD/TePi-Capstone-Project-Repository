@@ -1,7 +1,7 @@
 # TegukPintar Capstone Project 
-TegukPintar (TePi) is an innovative Android application designed to empower users in making healthier and more informed beverage choices. The app leverages OCR (Optical Character Recognition) and Machine Learning technologies to analyze nutritional labels on packaged drinks. By scanning product labels, users receive a health rating based on sugar, fat, and other nutritional content.
+TegukPintar (TePi) is an innovative Android application designed to empower users in making healthier and more informed beverage choices. The app leverages Machine Learning technology to analyze nutritional information on packaged drinks. By inputting nutrition information, users receive a health rating based on sugar, fat, and other nutritional content.
 
-TePi aims to address the lack of accessible tools for evaluating the full nutritional profile of beverages. It uses Tesseract OCR to extract text from labels and a custom TensorFlow model to classify beverages into health grades (Nutri-Grade A, B, C, D) based on recognized standards like those in Singapore. The entire process is optimized for on-device performance using TensorFlow Lite, ensuring fast and accurate results without requiring constant internet connectivity.
+TePi aims to address the lack of accessible tools for evaluating the full nutritional profile of beverages. It uses a custom TensorFlow model to classify beverages into health grades (Nutri-Score A, B, C, D, E) based on recognized standards.
 
 This project aligns with global health goals by promoting awareness of healthier beverage options, encouraging better lifestyle habits, and ultimately contributing to improved public health outcomes.
 
@@ -18,6 +18,9 @@ This project aligns with global health goals by promoting awareness of healthier
 
 
 ## Machine Learning
+- Preprocessed the data by cleaning and sorting beverage categories for the training and application catalog.
+- Built 2 models, one with with TensorFlow to categorize outputs based on nutritional features with 97% accuracy, and the second one is the Vertex AI Gemini Pro model that is fine-tuned with 1,000 data for the chatbot's explanation capabilities.
+- Developed the model's API using Flask. 
 
 ## Mobile Development
 
