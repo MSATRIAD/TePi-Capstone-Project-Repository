@@ -44,7 +44,7 @@ class ResultActivity : AppCompatActivity() {
         binding.tvSugars.text = "$sugars g"
         binding.tvSaturatedFat.text = "$saturatedFat g"
         binding.tvSalt.text = "$salt g"
-        binding.tvFruitsVegetables.text = "$fruitsVegNuts%"
+        binding.tvFruitsVegetables.text = "$fruitsVegNuts g"
         binding.tvFiber.text = "$fiber g"
         binding.tvProteins.text = "$proteins g"
 
@@ -107,6 +107,13 @@ class ResultActivity : AppCompatActivity() {
             }
             startActivity(intent)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        // Refresh UI when activity is resumed
+        updateBookmarkIcon()  // Ensure the bookmark icon is up-to-date
     }
 
     private fun saveProduct(

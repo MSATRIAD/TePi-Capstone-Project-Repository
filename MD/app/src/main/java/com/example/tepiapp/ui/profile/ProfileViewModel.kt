@@ -99,14 +99,19 @@ class ProfileViewModel(
     fun updateProfile(context: Context, displayName: String, imageUri: Uri?) {
         viewModelScope.launch {
             try {
+                // Make sure image size is valid
                 if (imageUri != null && !isImageSizeValid(context, imageUri)) {
                     throw Exception("Image size should be less than 5MB")
                 }
+
+                // Call the repository method to update the profile
                 val response = userRepository.editProfile(displayName, imageUri, context)
-                _profileUpdateResult.postValue(response)
-                _updateProfileStatus.postValue(true)
-            } catch (e: CancellationException) {
-                Log.e("ProfileViewModel", "Coroutine was cancelled: ${e.message}")
+                if (response != null) {
+                    _profileUpdateResult.postValue(response)
+                    _updateProfileStatus.postValue(true)
+                } else {
+                    _updateProfileStatus.postValue(false)
+                }
             } catch (e: Exception) {
                 Log.e("ProfileViewModel", "Error updating profile: ${e.message}")
                 _updateProfileStatus.postValue(false)

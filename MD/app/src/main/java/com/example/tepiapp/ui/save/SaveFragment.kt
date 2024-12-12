@@ -14,7 +14,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.tepiapp.data.adapter.SaveProductsAdapter
-import com.example.tepiapp.data.response.ListDetailItem
 import com.example.tepiapp.data.response.ListProductItem
 import com.example.tepiapp.databinding.FragmentSaveBinding
 import com.example.tepiapp.di.Injection
@@ -47,10 +46,9 @@ class SaveFragment : Fragment() {
 
         setupRecyclerView(resultLauncher)
 
+//        setupRecyclerView()
         setupViewModel()
-
         observeViewModel()
-
         setupSearchView()
     }
 
@@ -67,6 +65,7 @@ class SaveFragment : Fragment() {
     }
 
     private fun observeViewModel() {
+        // Observe the product list from the ViewModel
         saveViewModel.productList.observe(viewLifecycleOwner) { products ->
             productList = products
             productAdapter.updateData(products)
@@ -78,6 +77,25 @@ class SaveFragment : Fragment() {
 
         saveViewModel.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
             Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
+        }
+
+        // Observe productDetail only when user selects a product
+        saveViewModel.productDetail.observe(viewLifecycleOwner) { productDetail ->
+            if (productDetail != null) {
+                val intent = Intent(requireContext(), ResultActivity::class.java).apply {
+                    putExtra("productName", productDetail.productName)
+                    putExtra("energyKcal", productDetail.energyKcal100g)
+                    putExtra("sugars", productDetail.sugars100g)
+                    putExtra("saturatedFat", productDetail.saturatedFat100g)
+                    putExtra("salt", productDetail.salt100g)
+                    putExtra("fruitsVegNuts", productDetail.fruitsVegetablesNutsEstimateFromIngredients100g)
+                    putExtra("fiber", productDetail.fiber100g)
+                    putExtra("proteins", productDetail.proteins100g)
+                }
+                startActivity(intent)
+            } else {
+                Toast.makeText(requireContext(), "Product detail is unavailable", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -93,7 +111,7 @@ class SaveFragment : Fragment() {
     private fun fetchProductDetail(productId: String, resultLauncher: ActivityResultLauncher<Intent>) {
         lifecycleScope.launch {
             try {
-                // Call the fetchProductDetail function from the ViewModel
+                // Fetch product details only when a product is selected
                 saveViewModel.fetchProductDetail(productId)
 
                 // Observe the product details once the fetch is complete
@@ -125,7 +143,7 @@ class SaveFragment : Fragment() {
 //        startActivity(intent)
         resultLauncher.launch(intent)
     }
-    
+
     private fun setupSearchView() {
         binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {

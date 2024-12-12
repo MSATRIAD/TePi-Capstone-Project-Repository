@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Teguk Pintar</string>
     <string name="title_catalog">Catalog</string>
-    <string name="title_scan">Scan</string>
+    <string name="title_predict">Predict</string>
     <string name="title_save">Save</string>
     <string name="title_profile">Profile</string>
     <string name="app_logo">App Logo</string>
@@ -44,5 +44,7 @@
     <string name="result_product">Result Product\n</string>
     <string name="chatbot">Chatbot</string>
     <string name="save_product">Save Product</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="about_us">About Us</string>
 
 </resources>

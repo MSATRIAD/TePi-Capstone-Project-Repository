@@ -17,36 +17,51 @@ class SignupViewModel(private val userRepository: UserRepository) : ViewModel() 
     val isLoading = MutableLiveData<Boolean>()
 
     fun signup() {
-        val emailInput = email.value?.trim()
-        val usernameInput = username.value?.trim()
-        val passwordInput = password.value?.trim()
-        val confirmPasswordInput = confirmPassword.value?.trim()
+        // Get values and trim them, defaulting to empty strings if null
+        val emailInput = email.value?.trim() ?: ""
+        val usernameInput = username.value?.trim() ?: ""
+        val passwordInput = password.value?.trim() ?: ""
+        val confirmPasswordInput = confirmPassword.value?.trim() ?: ""
 
-        if (emailInput.isNullOrEmpty() || usernameInput.isNullOrEmpty() || passwordInput.isNullOrEmpty() || confirmPasswordInput.isNullOrEmpty()) {
-            signupStatus.value = "Please fill in all fields"
-            isSignupSuccess.value = false
-            return
+        // Validate inputs
+        when {
+            emailInput.isEmpty() || usernameInput.isEmpty() ||
+                    passwordInput.isEmpty() || confirmPasswordInput.isEmpty() -> {
+                updateSignupStatus("Please fill in all fields", false)
+                return
+            }
+            passwordInput != confirmPasswordInput -> {
+                updateSignupStatus("Passwords do not match", false)
+                return
+            }
         }
 
-        if (passwordInput != confirmPasswordInput) {
-            signupStatus.value = "Passwords do not match"
-            isSignupSuccess.value = false
-            return
-        }
-
+        // Start the loading process
         isLoading.value = true
 
+        // Call the repository to register
+        // Di dalam fungsi signup()
         viewModelScope.launch {
             try {
                 val response = userRepository.register(usernameInput, emailInput, passwordInput)
                 isLoading.value = false
-                signupStatus.value = response.message
-                isSignupSuccess.value = !response.error
+                if (response.error) {
+                    // Jika response error, artinya pendaftaran gagal
+                    updateSignupStatus(response.message, false)
+                } else {
+                    // Jika response tidak error, artinya pendaftaran berhasil
+                    updateSignupStatus(response.message, true)
+                }
             } catch (e: Exception) {
                 isLoading.value = false
-                signupStatus.value = "Error: ${e.localizedMessage}"
-                isSignupSuccess.value = false
+                updateSignupStatus("Error: ${e.localizedMessage}", false)
             }
         }
+    }
+
+    // Helper function to update the status
+    private fun updateSignupStatus(message: String, isSuccess: Boolean) {
+        signupStatus.value = message
+        isSignupSuccess.value = isSuccess
     }
 }

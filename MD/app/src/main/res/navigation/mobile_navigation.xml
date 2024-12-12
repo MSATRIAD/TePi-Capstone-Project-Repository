@@ -12,10 +12,10 @@
         tools:layout="@layout/fragment_catalog" />
 
     <fragment
-        android:id="@+id/navigation_scan"
-        android:name="com.example.tepiapp.ui.scan.ScanFragment"
-        android:label="@string/title_scan"
-        tools:layout="@layout/fragment_scan" />
+        android:id="@+id/navigation_predict"
+        android:name="com.example.tepiapp.ui.predict.PredictFragment"
+        android:label="@string/title_predict"
+        tools:layout="@layout/fragment_predict" />
 
     <fragment
         android:id="@+id/navigation_save"
@@ -23,27 +23,10 @@
         android:label="@string/title_save"
         tools:layout="@layout/fragment_save" />
 
-<!--    <fragment-->
-<!--        android:id="@+id/navigation_profile"-->
-<!--        android:name="com.example.tepiapp.ui.profile.ProfileFragment"-->
-<!--        android:label="@string/title_profile"-->
-<!--        tools:layout="@layout/fragment_profile" />-->
-
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.example.tepiapp.ui.profile.ProfileFragment"
         android:label="@string/title_profile"
         tools:layout="@layout/fragment_profile">
-        <!-- Define an action to navigate to EditProfileFragment -->
-        <action
-            android:id="@+id/action_navigation_profile_to_editProfileFragment"
-            app:destination="@id/editProfileFragment" />
     </fragment>
-
-    <!-- Define the EditProfileFragment -->
-    <fragment
-        android:id="@+id/editProfileFragment"
-        android:name="com.example.tepiapp.ui.profile.EditProfileFragment"
-        android:label="Edit"
-        tools:layout="@layout/fragment_edit_profile" />
 </navigation>

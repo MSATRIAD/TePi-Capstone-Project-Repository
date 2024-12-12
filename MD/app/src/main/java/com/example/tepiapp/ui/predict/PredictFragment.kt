@@ -1,37 +1,28 @@
-package com.example.tepiapp.ui.scan
+package com.example.tepiapp.ui.predict
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
-import android.view.View
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.tepiapp.data.api.ApiConfig
 import com.example.tepiapp.data.response.NutriscoreRequest
-import com.example.tepiapp.data.response.NutriscoreResponse
-import com.example.tepiapp.databinding.FragmentScanBinding
+import com.example.tepiapp.databinding.FragmentPredictBinding
 import com.example.tepiapp.ui.result.ResultActivity
-import getImageUri
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
-class ScanFragment : Fragment() {
-    private var _binding: FragmentScanBinding? = null
+class PredictFragment : Fragment() {
+    private var _binding: FragmentPredictBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: ScanViewModel by viewModels()
+    private val viewModel: PredictViewModel by viewModels()
 
     override fun onCreateView(
         inflater: android.view.LayoutInflater,
         container: android.view.ViewGroup?,
         savedInstanceState: Bundle?
     ): android.view.View {
-        _binding = FragmentScanBinding.inflate(inflater, container, false)
+        _binding = FragmentPredictBinding.inflate(inflater, container, false)
         return binding.root
     }
 
