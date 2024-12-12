@@ -30,14 +30,15 @@ class ResultActivity : AppCompatActivity() {
         binding = ActivityResultBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val productName = intent.getStringExtra("productName") ?: "Unknown Product"
-        val energyKcal = intent.getFloatExtra("energyKcal", 0f)
+        val productName = intent.getStringExtra("product_name") ?: "Unknown Product"
+        val energyKcal = intent.getFloatExtra("energy_kcal", 0f)
         val sugars = intent.getFloatExtra("sugars", 0f)
-        val saturatedFat = intent.getFloatExtra("saturatedFat", 0f)
+        val saturatedFat = intent.getFloatExtra("saturated_fat", 0f)
         val salt = intent.getFloatExtra("salt", 0f)
-        val fruitsVegNuts = intent.getFloatExtra("fruitsVegNuts", 0f)
+        val fruitsVegNuts = intent.getFloatExtra("fruits_veg_nuts", 0f)
         val fiber = intent.getFloatExtra("fiber", 0f)
         val proteins = intent.getFloatExtra("proteins", 0f)
+        val nutriscoreGrade = intent.getStringExtra("nutriscore_grade") ?: "Unknown"
 
         binding.tvProductName.text = productName
         binding.tvEnergyKcal.text = "$energyKcal kcal"
@@ -47,6 +48,7 @@ class ResultActivity : AppCompatActivity() {
         binding.tvFruitsVegetables.text = "$fruitsVegNuts g"
         binding.tvFiber.text = "$fiber g"
         binding.tvProteins.text = "$proteins g"
+//        binding.tvNutriscoreGrade.text = nutriscoreGrade
 
         lifecycleScope.launch {
             val userPreference = UserPreference.getInstance(this@ResultActivity.dataStore)
@@ -65,7 +67,7 @@ class ResultActivity : AppCompatActivity() {
 
         viewModel.nutriscoreGrade.observe(this) { grade ->
             showProgressBar(false)
-            binding.tvNutriscoreGrade.text = getString(R.string.nutriscore_grade, grade.uppercase())
+            binding.tvNutriscoreGrade.text = nutriscoreGrade
         }
 
         binding.topAppBar.setNavigationOnClickListener {
@@ -96,14 +98,15 @@ class ResultActivity : AppCompatActivity() {
 
         binding.fabChatbot.setOnClickListener {
             val intent = Intent(this, ChatbotActivity::class.java).apply {
-                putExtra("productName", productName)
-                putExtra("energyKcal", energyKcal)
+                putExtra("product_name", productName)
+                putExtra("energy_kcal", energyKcal)
                 putExtra("sugars", sugars)
-                putExtra("saturatedFat", saturatedFat)
+                putExtra("saturated_fat", saturatedFat)
                 putExtra("salt", salt)
-                putExtra("fruitsVegNuts", fruitsVegNuts)
+                putExtra("fruits_veg_nuts", fruitsVegNuts)
                 putExtra("fiber", fiber)
                 putExtra("proteins", proteins)
+                putExtra("nutriscore_grade", nutriscoreGrade)
             }
             startActivity(intent)
         }

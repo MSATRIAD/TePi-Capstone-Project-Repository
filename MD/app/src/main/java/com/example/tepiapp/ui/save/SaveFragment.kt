@@ -81,23 +81,23 @@ class SaveFragment : Fragment() {
         }
 
         // Observe productDetail only when user selects a product
-        saveViewModel.productDetail.observe(viewLifecycleOwner) { productDetail ->
-            if (productDetail != null) {
-                val intent = Intent(requireContext(), ResultActivity::class.java).apply {
-                    putExtra("productName", productDetail.productName)
-                    putExtra("energyKcal", productDetail.energyKcal100g)
-                    putExtra("sugars", productDetail.sugars100g)
-                    putExtra("saturatedFat", productDetail.saturatedFat100g)
-                    putExtra("salt", productDetail.salt100g)
-                    putExtra("fruitsVegNuts", productDetail.fruitsVegetablesNutsEstimateFromIngredients100g)
-                    putExtra("fiber", productDetail.fiber100g)
-                    putExtra("proteins", productDetail.proteins100g)
-                }
-                startActivity(intent)
-            } else {
-                Toast.makeText(requireContext(), "Product detail is unavailable", Toast.LENGTH_SHORT).show()
-            }
-        }
+//        saveViewModel.productDetail.observe(viewLifecycleOwner) { productDetail ->
+//            if (productDetail != null) {
+//                val intent = Intent(requireContext(), ResultActivity::class.java).apply {
+//                    putExtra("productName", productDetail.productName)
+//                    putExtra("energyKcal", productDetail.energyKcal100g)
+//                    putExtra("sugars", productDetail.sugars100g)
+//                    putExtra("saturatedFat", productDetail.saturatedFat100g)
+//                    putExtra("salt", productDetail.salt100g)
+//                    putExtra("fruitsVegNuts", productDetail.fruitsVegetablesNutsEstimateFromIngredients100g)
+//                    putExtra("fiber", productDetail.fiber100g)
+//                    putExtra("proteins", productDetail.proteins100g)
+//                }
+//                startActivity(intent)
+//            } else {
+//                Toast.makeText(requireContext(), "Product detail is unavailable", Toast.LENGTH_SHORT).show()
+//            }
+//        }
     }
 
     private fun setupRecyclerView(resultLauncher: ActivityResultLauncher<Intent>) {
@@ -128,18 +128,19 @@ class SaveFragment : Fragment() {
 
     private fun navigateToDetail(detail: ListDetailItem, resultLauncher: ActivityResultLauncher<Intent>) {
         val intent = Intent(requireContext(), ResultActivity::class.java).apply {
-            putExtra("productName", detail.productName)
-            putExtra("energyKcal", detail.energyKcal100g)
+            putExtra("product_name", detail.productName)
+            putExtra("energy_kcal", detail.energyKcal100g)
             putExtra("sugars", detail.sugars100g)
-            putExtra("saturatedFat", detail.saturatedFat100g)
+            putExtra("saturated_fat", detail.saturatedFat100g)
             putExtra("salt", detail.salt100g)
-            putExtra("fruitsVegNuts", detail.fruitsVegetablesNutsEstimateFromIngredients100g)
+            putExtra("fruits_veg_nuts", detail.fruitsVegetablesNutsEstimateFromIngredients100g)
             putExtra("fiber", detail.fiber100g)
             putExtra("proteins", detail.proteins100g)
+            putExtra("nutriscore_grade", detail.nutriscoreGrade)
             putExtra("isBookmarked", true)
 
             // Flags to manage back stack behavior
-//            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
 //        startActivity(intent)
         resultLauncher.launch(intent)
