@@ -38,3 +38,5 @@ This project aligns with global health goals by promoting awareness of healthier
 [Express.js](https://expressjs.com/)  is the most popular web framework for Node.js. It is designed for building web applications and APIs. Fast, unopinionated, minimalist web framework for Node.js
 
 [FastAPI](https://fastapi.tiangolo.com/) is a modern, fast (high-performance), web framework for building APIs with Python based on standard Python type hints.
+
+[Flask](https://flask.palletsprojects.com/en/stable/) is a lightweight WSGI web application framework. It is designed to make getting started quick and easy, with the ability to scale up to complex applications.
