@@ -1,31 +1,24 @@
 package com.example.tepiapp.ui.profile
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Switch
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.tepiapp.R
 import com.example.tepiapp.data.UserRepository
 import com.example.tepiapp.databinding.FragmentProfileBinding
-import com.example.tepiapp.ui.about.AboutActivity
 import com.example.tepiapp.ui.login.LoginActivity
 import com.example.tepiapp.data.api.ApiConfig
 import com.example.tepiapp.data.pref.UserPreference
-import com.example.tepiapp.data.api.ApiService
 import com.example.tepiapp.data.pref.dataStore
-import com.example.tepiapp.di.Injection
-import com.example.tepiapp.ui.catalog.CatalogViewModel
-import com.example.tepiapp.ui.catalog.CatalogViewModelFactory
+import com.example.tepiapp.ui.about.AboutActivity
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 

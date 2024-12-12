@@ -46,5 +46,6 @@
     <string name="save_product">Save Product</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="about_us">About Us</string>
+    <string name="about_tepi"><![CDATA[TePi (Teguk Pintar) adalah aplikasi inovatif berbasis machine learning yang dirancang untuk membantu pengguna memprediksi nutriscore dari berbagai jenis minuman. Dengan menggunakan teknologi canggih dan model machine learning yang telah dilatih dengan data gizi yang akurat, TePi memberikan informasi yang cepat dan terpercaya mengenai nilai gizi minuman yang Anda pilih. Aplikasi ini mempermudah Anda dalam membuat keputusan yang lebih sehat dengan memberikan pemahaman yang jelas tentang kandungan nutrisi dalam minuman, sehingga Anda dapat lebih bijak dalam memilih minuman yang sesuai dengan kebutuhan gizi Anda.]]></string>
 
 </resources>
