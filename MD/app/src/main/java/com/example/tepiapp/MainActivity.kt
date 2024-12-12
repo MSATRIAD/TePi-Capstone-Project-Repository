@@ -26,10 +26,9 @@ class MainActivity : AppCompatActivity() {
         val navView: BottomNavigationView = binding.navView
 
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
-        // Define top-level destinations
         val appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.navigation_catalog, R.id.navigation_scan, R.id.navigation_save, R.id.navigation_profile
+                R.id.navigation_catalog, R.id.navigation_predict, R.id.navigation_save, R.id.navigation_profile
             )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -38,11 +37,16 @@ class MainActivity : AppCompatActivity() {
 
     private fun applySavedTheme() {
         val sharedPrefs = getSharedPreferences("app_preferences", MODE_PRIVATE)
-        val isDarkMode = sharedPrefs.getBoolean("dark_mode", false) // Default is false (light mode)
+        val isDarkMode = sharedPrefs.getBoolean("dark_mode", false)
         if (isDarkMode) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()  // Call the super method to handle default back press behavior
+        finishAffinity()  // Close the app when back is pressed
     }
 }

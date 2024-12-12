@@ -2,8 +2,11 @@ package com.example.tepiapp.ui.register
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.tepiapp.data.UserRepository
+import kotlinx.coroutines.launch
 
-class SignupViewModel : ViewModel() {
+class SignupViewModel(private val userRepository: UserRepository) : ViewModel() {
 
     val email = MutableLiveData<String>()
     val username = MutableLiveData<String>()
@@ -11,24 +14,46 @@ class SignupViewModel : ViewModel() {
     val confirmPassword = MutableLiveData<String>()
     val signupStatus = MutableLiveData<String>()
     val isSignupSuccess = MutableLiveData<Boolean>()
+    val isLoading = MutableLiveData<Boolean>()
 
-    // Fungsi untuk validasi pendaftaran
     fun signup() {
-        val emailInput = email.value?.trim()
-        val usernameInput = username.value?.trim()
-        val passwordInput = password.value?.trim()
-        val confirmPasswordInput = confirmPassword.value?.trim()
+        val emailInput = email.value?.trim() ?: ""
+        val usernameInput = username.value?.trim() ?: ""
+        val passwordInput = password.value?.trim() ?: ""
+        val confirmPasswordInput = confirmPassword.value?.trim() ?: ""
 
-        if (emailInput.isNullOrEmpty() || usernameInput.isNullOrEmpty() || passwordInput.isNullOrEmpty() || confirmPasswordInput.isNullOrEmpty()) {
-            signupStatus.value = "Please fill in all fields"
-            isSignupSuccess.value = false
-        } else if (passwordInput != confirmPasswordInput) {
-            signupStatus.value = "Passwords do not match"
-            isSignupSuccess.value = false
-        } else {
-            // Logika registrasi berhasil
-            signupStatus.value = "Sign up successful"
-            isSignupSuccess.value = true
+        when {
+            emailInput.isEmpty() || usernameInput.isEmpty() ||
+                    passwordInput.isEmpty() || confirmPasswordInput.isEmpty() -> {
+                updateSignupStatus("Please fill in all fields", false)
+                return
+            }
+            passwordInput != confirmPasswordInput -> {
+                updateSignupStatus("Passwords do not match", false)
+                return
+            }
         }
+
+        isLoading.value = true
+
+        viewModelScope.launch {
+            try {
+                val response = userRepository.register(usernameInput, emailInput, passwordInput)
+                isLoading.value = false
+                if (response.error) {
+                    updateSignupStatus(response.message, false)
+                } else {
+                    updateSignupStatus(response.message, true)
+                }
+            } catch (e: Exception) {
+                isLoading.value = false
+                updateSignupStatus("Error: ${e.localizedMessage}", false)
+            }
+        }
+    }
+
+    private fun updateSignupStatus(message: String, isSuccess: Boolean) {
+        isSignupSuccess.postValue(isSuccess)
+        signupStatus.postValue(message)
     }
 }

@@ -9,6 +9,6 @@ data class ListProductItem(
     @field:SerializedName("product_name")
     val name: String,
 
-    @field:SerializedName("grade")
+    @field:SerializedName("nutriscore_grade")
     val grade: String
 )

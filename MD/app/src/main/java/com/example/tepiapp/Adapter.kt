@@ -11,7 +11,7 @@ class Adapter(private var productList: List<ListProductItem>, private val onItem
 
     inner class ProductViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val productName: TextView = view.findViewById(R.id.tvProductName)
-        val nutrigradeLabel: TextView = view.findViewById(R.id.tvNutrigradeLabel)
+//        val nutrigradeLabel: TextView = view.findViewById(R.id.tvNutrigradeLabel)
         val productGrade: TextView = view.findViewById(R.id.tvProductGrade)
     }
 
@@ -22,15 +22,18 @@ class Adapter(private var productList: List<ListProductItem>, private val onItem
     }
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
-        val event = productList[position]
+        val product = productList[position]
 
-        holder.productName.text = event.name
-        holder.nutrigradeLabel.text = holder.itemView.context.getString(R.string.nutrigrade_label)
+        // Set the product name and nutrigrade label
+        holder.productName.text = product.name.uppercase()
+//        holder.nutrigradeLabel.text = holder.itemView.context.getString(R.string.nutrigrade_label)
 
-        holder.productGrade.text = event.grade.uppercase()
+        // Safely handle null grades
+        holder.productGrade.text = "Nutriscore: ${product.grade}"
 
+        // Set the click listener
         holder.itemView.setOnClickListener {
-            onItemClick(event)
+            onItemClick(product)
         }
     }
 
@@ -38,6 +41,7 @@ class Adapter(private var productList: List<ListProductItem>, private val onItem
         return productList.size
     }
 
+    // Method to update the list
     fun updateData(newProductList: List<ListProductItem>) {
         productList = newProductList
         notifyDataSetChanged()

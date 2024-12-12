@@ -8,12 +8,15 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.tepiapp.Adapter
 import com.example.tepiapp.data.response.ListProductItem
 import com.example.tepiapp.databinding.FragmentCatalogBinding
+import com.example.tepiapp.di.Injection
 import com.example.tepiapp.ui.detail.DetailProductActivity
+import kotlinx.coroutines.launch
 
 class CatalogFragment : Fragment() {
 
@@ -23,57 +26,63 @@ class CatalogFragment : Fragment() {
     private lateinit var catalogViewModel: CatalogViewModel
     private var productList: List<ListProductItem> = listOf()
 
-
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentCatalogBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-        return root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        catalogViewModel = ViewModelProvider(this)[CatalogViewModel::class.java]
-
         setupRecyclerView()
 
-        catalogViewModel.productList.observe(viewLifecycleOwner) { events ->
-            productList = events
-            productAdapter.updateData(events)
-        }
+        setupViewModel()
 
-        catalogViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            if (isLoading) {
-                binding.progressBar.visibility = View.VISIBLE
-            } else {
-                binding.progressBar.visibility = View.GONE
-            }
-        }
+        observeViewModel()
 
-        catalogViewModel.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
-            if (errorMessage != null) {
-                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
-            }
-        }
         setupSearchView()
     }
 
+    private fun setupViewModel() {
+        lifecycleScope.launch {
+            val userRepository = Injection.provideRepository(requireContext())
+
+            val factory = CatalogViewModelFactory(userRepository)
+            catalogViewModel = ViewModelProvider(this@CatalogFragment, factory).get(CatalogViewModel::class.java)
+
+            catalogViewModel.getSession()
+            catalogViewModel.fetchProducts()
+
+        }
+    }
+
+    private fun observeViewModel() {
+        catalogViewModel.productList.observe(viewLifecycleOwner) { products ->
+            productList = products
+            productAdapter.updateData(products)
+        }
+
+        catalogViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
+
+        catalogViewModel.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
+            Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private fun setupRecyclerView() {
-//        productAdapter = Adapter(listOf())
         productAdapter = Adapter(listOf()) { product ->
             val intent = Intent(requireContext(), DetailProductActivity::class.java)
             intent.putExtra("productId", product.id)
             startActivity(intent)
         }
 
-        binding.rvProduct.apply {
-            layoutManager = GridLayoutManager(context, 2)
-            adapter = productAdapter
-        }
+        binding.rvProduct.layoutManager = GridLayoutManager(context, 2)
+        binding.rvProduct.adapter = productAdapter
     }
 
     private fun setupSearchView() {
@@ -100,9 +109,7 @@ class CatalogFragment : Fragment() {
     }
 
     private fun searchProducts(query: String) {
-        val filteredList = productList.filter { event ->
-            event.name.contains(query, ignoreCase = true)
-        }
+        val filteredList = productList.filter { it.name.contains(query, ignoreCase = true) }
         productAdapter.updateData(filteredList)
     }
 

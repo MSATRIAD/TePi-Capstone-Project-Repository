@@ -1,12 +1,11 @@
-package com.example.tepiapp.ui.scan
+package com.example.tepiapp.ui.predict
 
-import android.graphics.Bitmap
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class ScanViewModel : ViewModel() {
+class PredictViewModel : ViewModel() {
 
 //    private val _text = MutableLiveData<String>().apply {
 //        value = "This is Scan Fragment"

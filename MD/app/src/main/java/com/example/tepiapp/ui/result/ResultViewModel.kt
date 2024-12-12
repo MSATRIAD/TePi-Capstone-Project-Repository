@@ -3,19 +3,34 @@ package com.example.tepiapp.ui.result
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.tepiapp.data.UserRepository
 import com.example.tepiapp.data.api.ApiConfig
 import com.example.tepiapp.data.response.NutriscoreRequest
 import com.example.tepiapp.data.response.NutriscoreResponse
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.example.tepiapp.data.response.SaveRequest
+import kotlinx.coroutines.launch
 
 class ResultViewModel : ViewModel() {
+
+    private lateinit var userRepository: UserRepository
 
     private val _nutriscoreGrade = MutableLiveData<String>()
     val nutriscoreGrade: LiveData<String> get() = _nutriscoreGrade
 
-    fun getNutriscoreGrade(
+    private val _saveStatus = MutableLiveData<String>()
+    val saveStatus: LiveData<String> get() = _saveStatus
+
+    private val _deleteSaveStatus = MutableLiveData<String>()
+    val deleteSaveStatus: LiveData<String> get() = _deleteSaveStatus
+
+    // Set UserRepository
+    fun setUserRepository(userRepository: UserRepository) {
+        this.userRepository = userRepository
+    }
+
+    // Fungsi untuk melakukan prediksi Nutriscore
+    fun predictNutriscore(
         energyKcal: Float,
         sugars: Float,
         saturatedFat: Float,
@@ -24,7 +39,6 @@ class ResultViewModel : ViewModel() {
         fiber: Float,
         proteins: Float
     ) {
-        val apiService = ApiConfig.getApiService()
         val request = NutriscoreRequest(
             energyKcal = energyKcal,
             sugars = sugars,
@@ -35,19 +49,44 @@ class ResultViewModel : ViewModel() {
             proteins = proteins
         )
 
-        apiService.predict(request).enqueue(object : Callback<NutriscoreResponse> {
-            override fun onResponse(call: Call<NutriscoreResponse>, response: Response<NutriscoreResponse>) {
-                if (response.isSuccessful) {
-                    val grade = response.body()?.predictedGrade ?: "Unknown"
-                    _nutriscoreGrade.value = grade
-                } else {
-                    _nutriscoreGrade.value = "Error"
-                }
-            }
-
-            override fun onFailure(call: Call<NutriscoreResponse>, t: Throwable) {
+        // Panggil fungsi predictNutriscore dari UserRepository
+        viewModelScope.launch {
+            try {
+                val response = userRepository.predictNutriscore(request)
+                _nutriscoreGrade.value = response.body()?.predictedGrade ?: "Unknown"
+            } catch (e: Exception) {
                 _nutriscoreGrade.value = "Error"
             }
-        })
+        }
+    }
+
+    fun saveProduct(data: SaveRequest) {
+        viewModelScope.launch {
+            try {
+                val response = userRepository.saveProduct(data)
+                if (response.isSuccessful) {
+                    _saveStatus.value = response.body()?.message
+                } else {
+                    _saveStatus.value = "Failed to save product"
+                }
+            } catch (e: Exception) {
+                _saveStatus.value = "Error: ${e.message}"
+            }
+        }
+    }
+
+    fun deleteSavedProduct(productId: String) {
+        viewModelScope.launch {
+            try {
+                val response = userRepository.deleteSavedProduct(productId)
+                if (response.isSuccessful) {
+                    _deleteSaveStatus.postValue("Product deleted successfully")
+                } else {
+                    _deleteSaveStatus.postValue("Failed to delete product: ${response.message()}")
+                }
+            } catch (e: Exception) {
+                _deleteSaveStatus.postValue("Error: ${e.message}")
+            }
+        }
     }
 }
