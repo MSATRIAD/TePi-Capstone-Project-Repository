@@ -17,13 +17,11 @@ class SignupViewModel(private val userRepository: UserRepository) : ViewModel() 
     val isLoading = MutableLiveData<Boolean>()
 
     fun signup() {
-        // Get values and trim them, defaulting to empty strings if null
         val emailInput = email.value?.trim() ?: ""
         val usernameInput = username.value?.trim() ?: ""
         val passwordInput = password.value?.trim() ?: ""
         val confirmPasswordInput = confirmPassword.value?.trim() ?: ""
 
-        // Validate inputs
         when {
             emailInput.isEmpty() || usernameInput.isEmpty() ||
                     passwordInput.isEmpty() || confirmPasswordInput.isEmpty() -> {
@@ -36,20 +34,15 @@ class SignupViewModel(private val userRepository: UserRepository) : ViewModel() 
             }
         }
 
-        // Start the loading process
         isLoading.value = true
 
-        // Call the repository to register
-        // Di dalam fungsi signup()
         viewModelScope.launch {
             try {
                 val response = userRepository.register(usernameInput, emailInput, passwordInput)
                 isLoading.value = false
                 if (response.error) {
-                    // Jika response error, artinya pendaftaran gagal
                     updateSignupStatus(response.message, false)
                 } else {
-                    // Jika response tidak error, artinya pendaftaran berhasil
                     updateSignupStatus(response.message, true)
                 }
             } catch (e: Exception) {
@@ -59,9 +52,8 @@ class SignupViewModel(private val userRepository: UserRepository) : ViewModel() 
         }
     }
 
-    // Helper function to update the status
     private fun updateSignupStatus(message: String, isSuccess: Boolean) {
-        signupStatus.value = message
-        isSignupSuccess.value = isSuccess
+        isSignupSuccess.postValue(isSuccess)
+        signupStatus.postValue(message)
     }
 }

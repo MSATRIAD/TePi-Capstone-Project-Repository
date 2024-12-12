@@ -91,27 +91,29 @@ class SignupActivity : AppCompatActivity() {
             }
         }
 
-        // Observe status and success
         signupViewModel.signupStatus.observe(this) { status ->
             progressBar.visibility = View.GONE
-            val isSuccess = signupViewModel.isSignupSuccess.value == true
-            if (!isSuccess) {
-                // Show success alert
+
+            // Ambil nilai langsung dari LiveData untuk memastikan status sinkron
+            val isSuccess = signupViewModel.isSignupSuccess.value ?: false
+
+            if (isSuccess) {
+                // Tampilkan dialog sukses
                 showAlertDialog(
                     title = "Pendaftaran Berhasil",
                     message = status,
                     onPositiveAction = {
-                        // Navigate to LoginActivity after successful sign-up
+                        // Navigasi ke LoginActivity
                         val intent = Intent(this, LoginActivity::class.java)
                         startActivity(intent)
-                        finish() // Close the SignupActivity to prevent going back to it
+                        finish()
                     }
                 )
             } else {
-                // Show error alert
+                // Tampilkan dialog gagal
                 showAlertDialog(
                     title = "Pendaftaran Gagal",
-                    message = status,
+                    message = status
                 )
             }
         }
