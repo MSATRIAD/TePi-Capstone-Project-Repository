@@ -31,7 +31,9 @@ This project aligns with global health goals by promoting awareness of healthier
 - Firestore is utilized to store user data, providing a flexible, scalable NoSQL database solution that ensures quick and reliable access to user profiles and preferences.
 - Realtime Database is employed to store product data, ensuring real-time updates for the beverage information available in the app.
   
-### Resources
+## Resources
 [Node.js](https://nodejs.org/en) is an open-source and cross-platform JavaScript runtime environment. Event-driven, Fast, and Asynchronus Nature.
 
 [Express.js](https://expressjs.com/)  is the most popular web framework for Node.js. It is designed for building web applications and APIs. Fast, unopinionated, minimalist web framework for Node.js
+
+[FastAPI](https://fastapi.tiangolo.com/) is a modern, fast (high-performance), web framework for building APIs with Python based on standard Python type hints.
