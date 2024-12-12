@@ -23,6 +23,10 @@ This project aligns with global health goals by promoting awareness of healthier
 - Developed the model's API using Flask and FastAPI. 
 
 ## Mobile Development
+- Create a mockup for the application.
+- Developing TePi App using Android Studio and Kotlin.
+- Integrate API for authentication, fetching data from database, and use cloud-based ML models.
+- Developing Chatbot using API.
 
 ## Cloud Computing
 - The backend of TePi is deployed using Google Cloud Run, providing scalable and efficient serverless deployment for handling user requests.
