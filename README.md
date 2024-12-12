@@ -25,6 +25,12 @@ This project aligns with global health goals by promoting awareness of healthier
 ## Mobile Development
 
 ## Cloud Computing
+- The backend of TePi is deployed using Google Cloud Run, providing scalable and efficient serverless deployment for handling user requests.
+- The backend is built using Node.js, offering a robust and fast runtime environment to handle API requests and interact with the database.
+- Firebase Authentication is used to securely manage user login and authentication, enabling users to sign up and sign in with various authentication methods.
+- Firestore is utilized to store user data, providing a flexible, scalable NoSQL database solution that ensures quick and reliable access to user profiles and preferences.
+- Realtime Database is employed to store product data, ensuring real-time updates for the beverage information available in the app.
+  
 ### Resources
 [Node.js](https://nodejs.org/en) is an open-source and cross-platform JavaScript runtime environment. Event-driven, Fast, and Asynchronus Nature.
 
