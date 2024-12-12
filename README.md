@@ -30,6 +30,7 @@ This project aligns with global health goals by promoting awareness of healthier
 - Firebase Authentication is used to securely manage user login and authentication, enabling users to sign up and sign in with various authentication methods.
 - Firestore is utilized to store user data, providing a flexible, scalable NoSQL database solution that ensures quick and reliable access to user profiles and preferences.
 - Realtime Database is employed to store product data, ensuring real-time updates for the beverage information available in the app.
+- Google Cloud Storage to store image profile user.
   
 ## Resources
 [Node.js](https://nodejs.org/en) is an open-source and cross-platform JavaScript runtime environment. Event-driven, Fast, and Asynchronus Nature.
