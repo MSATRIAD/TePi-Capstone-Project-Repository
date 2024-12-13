@@ -16,12 +16,12 @@ This project aligns with global health goals by promoting awareness of healthier
 | Muhammad Adzikra Dhiya Alfauzan | A011B4KY2689 | Mobile Development |
 | Hosea Javier | A011B4KY1800 | Mobile Development |
 | Ivan Arsy Himawan | C011B4KY2024 | Cloud Computing |
-| Muhammad Satria Dharma | c011b4ky3083 | Cloud Computing |
+| Muhammad Satria Dharma | C011b4ky3083 | Cloud Computing |
 
 
 ## Machine Learning
-- Preprocessed the data by cleaning and sorting beverage categories for the training and application catalog.
-- Built 2 models, one with with TensorFlow to categorize outputs based on nutritional features with 97% accuracy, and the second one is the Vertex AI Gemini Pro model that is fine-tuned with 1,000 data for the chatbot's explanation capabilities.
+- Preprocessed the data by cleaning and sorting beverage categories for the training and application catalog. [Link](https://www.kaggle.com/datasets/abiyyuanel/cleaned-open-food-facts-dataset) to Dataset.
+- Built 2 models, one with with TensorFlow to categorize outputs based on nutritional features with 96% accuracy, and the second one is the Vertex AI Gemini Pro model that is fine-tuned with 1,000 data for the chatbot's explanation capabilities.
 - Developed the model's API using Flask and FastAPI. 
 
 ## Mobile Development
