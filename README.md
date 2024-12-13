@@ -5,7 +5,7 @@ TePi aims to address the lack of accessible tools for evaluating the full nutrit
 
 This project aligns with global health goals by promoting awareness of healthier beverage options, encouraging better lifestyle habits, and ultimately contributing to improved public health outcomes.
 
-[Download the apk](https://drive.google.com/drive/folders/1vB2Xlr1xONpwGG2dq2JzXlwg2pi8pG6Z?usp=sharing)
+[Download the apk](https://drive.google.com/drive/folders/1SryDGpy4U8VGEj4QiA9ZYpJpp3gVBW5s?usp=sharing)
 
 ## Our Team Member
 | Nama    | Bangkit ID    | Learning Path    |
